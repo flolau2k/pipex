@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/17 17:02:39 by flauer           ###   ########.fr       */
+/*   Updated: 2023/05/22 10:30:30 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,27 @@ void	cleanup(t_pipex *st)
 	
 }
 
+char	*get_env(char *env[], char *key)
+{
+	int		i;
+
+	if (ft_strlen(key) == 0)
+		return (NULL);
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strnstr(env[i], key, ft_strlen(key)))
+			return (env[i]);
+		++i;
+	}
+	return (NULL);
+}
+
 void	get_cmd(t_pipex *st, char *env[])
 {
 	char	**path;
 
-	path = ft_split(env)
+	path = ft_split(env);
 }
 
 bool	init(t_pipex *st, char  *argv[], char *env[])
