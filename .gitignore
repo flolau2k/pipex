@@ -2,3 +2,4 @@ pipex
 infile
 outfile
 obj/
+vgcore*
