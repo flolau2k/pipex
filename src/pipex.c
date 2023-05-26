@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/22 10:30:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/05/26 13:17:00 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void free_arr(char **arr)
+void free_splits(char **arr)
 {
 	int	i;
 
@@ -28,32 +28,64 @@ void free_arr(char **arr)
 
 void	cleanup(t_pipex *st)
 {
-	free(st->argv1);
-	free(st->argv2);
+	if (st->argv1)
+		free_splits(st->argv1);
+	if (st->argv2)
+		free_splits(st->argv2);
+	if (st->cmd1)
+		free(st->cmd1);
+	if (st->cmd2)
+		free(st->cmd2);
 	
 }
 
-char	*get_env(char *env[], char *key)
+char	**get_env(char *env[], char *key)
 {
 	int		i;
+	char	*trim;
+	char	**ret;
 
+	i = 0;
+	trim = NULL;
+	ret = NULL;
 	if (ft_strlen(key) == 0)
 		return (NULL);
-	i = 0;
 	while (env[i])
 	{
 		if (ft_strnstr(env[i], key, ft_strlen(key)))
-			return (env[i]);
+		{
+			trim = ft_strtrim(env[i], key);
+			ret = ft_split(trim, ':');
+			return (free(trim), ret);
+		}
 		++i;
 	}
 	return (NULL);
 }
 
-void	get_cmd(t_pipex *st, char *env[])
+char	*get_cmd(char *name, char *env[])
 {
-	char	**path;
+	char	**paths;
+	char	*path;
+	char	*cmd;
+	int		i;
 
-	path = ft_split(env);
+	i = 0;
+	cmd = NULL;
+	paths = get_env(env, "PATH=");
+	while (paths[i])
+	{
+		path = ft_strjoin(paths[i], "/");
+		cmd = ft_strjoin(path, name);
+		free(path);
+		if (!access(cmd, X_OK))
+			break ;
+		free(cmd);
+		cmd = NULL;
+		++i;
+	}
+	free_splits(paths);
+	return (cmd);
 }
 
 bool	init(t_pipex *st, char  *argv[], char *env[])
@@ -63,13 +95,14 @@ bool	init(t_pipex *st, char  *argv[], char *env[])
 	if (!access(argv[4], F_OK) && access(argv[4], W_OK))
 		return (false);
 	st->fd1 = open(argv[1], O_RDONLY);
-	st->fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 644);
+	st->fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	pipe(st->pipe);
-	st->argv1 = ft_split(argv[2], ' ');
+	st->argv1 = ft_split(argv[2], ' '); // what happens on empty string?
 	st->argv2 = ft_split(argv[3], ' ');
-	if (!st->argv2)
-		return (free_arr(st->argv1), false);
-	get_cmd(st, env);
+	st->cmd1 = get_cmd(st->argv1[0], env);
+	st->cmd2 = get_cmd(st->argv2[0], env);
+	if (!st->cmd1 || !st->cmd2)
+		return (false);
 	st->env = env;
 	return (true);
 }
@@ -81,7 +114,6 @@ void	parent(t_pipex *st)
 	dup2(st->fd1, STDIN_FILENO); // redirect stdin to infile
 	execve(st->cmd1, st->argv1, st->env);
 	perror(strerror(errno));
-	cleanup(st);
 }
 
 void	child(t_pipex *st)
@@ -91,7 +123,6 @@ void	child(t_pipex *st)
 	dup2(st->fd2, STDOUT_FILENO);
 	execve(st->cmd2, st->argv2, st->env);
 	perror(strerror(errno));
-	cleanup(st);
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -104,11 +135,12 @@ int	main(int argc, char *argv[], char *env[])
 	if (argc != 5)
 		return (write(STDERR_FILENO, "Input Error\n", 12));
 	if (!init(&st, argv, env))
-		return (perror(strerror(errno)), -1);
+		return (cleanup(&st), perror(strerror(errno)), -1);
 	st.pid = fork();
 	if (st.pid)
 		parent(&st);
 	else
 		child(&st);
+	cleanup(&st);
 	return (0);
 }

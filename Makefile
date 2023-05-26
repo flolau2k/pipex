@@ -3,18 +3,18 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
+#    By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/05/17 16:42:12 by flauer           ###   ########.fr        #
+#    Updated: 2023/05/26 11:31:09 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =		pipex
 
 CC =		cc
-CFLAGS =	-g -Wall -Wextra -Werror
-#CFLAGS = -g
+#CFLAGS =	-g -Wall -Wextra -Werror
+CFLAGS = -g
 
 LIBFT =		libft/libft.a
 
