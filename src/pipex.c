@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/26 13:17:00 by flauer           ###   ########.fr       */
+/*   Updated: 2023/05/26 14:04:41 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ char	*get_cmd(char *name, char *env[])
 
 	i = 0;
 	cmd = NULL;
+	if (!name)
+		return (NULL);
 	paths = get_env(env, "PATH=");
 	while (paths[i])
 	{
@@ -102,7 +104,7 @@ bool	init(t_pipex *st, char  *argv[], char *env[])
 	st->cmd1 = get_cmd(st->argv1[0], env);
 	st->cmd2 = get_cmd(st->argv2[0], env);
 	if (!st->cmd1 || !st->cmd2)
-		return (false);
+		return (errno = ENOENT,false);
 	st->env = env;
 	return (true);
 }
@@ -135,7 +137,7 @@ int	main(int argc, char *argv[], char *env[])
 	if (argc != 5)
 		return (write(STDERR_FILENO, "Input Error\n", 12));
 	if (!init(&st, argv, env))
-		return (cleanup(&st), perror(strerror(errno)), -1);
+		return (cleanup(&st), perror(strerror(errno)), errno);
 	st.pid = fork();
 	if (st.pid)
 		parent(&st);
