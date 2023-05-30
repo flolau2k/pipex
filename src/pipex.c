@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/30 15:39:42 by flauer           ###   ########.fr       */
+/*   Updated: 2023/05/30 16:04:53 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ft_error(t_pipex *st, ...)
 		message = va_arg(args, char *);
 	}
 	if (errno)
-		perror("asd");
+		perror(NULL);
 	exit(-1);
 }
 
@@ -106,7 +106,7 @@ char	*get_cmd(t_pipex *st, char *name, char *env[])
 	}
 	free_splits(paths);
 	if (!cmd)
-		ft_error(st, "pipex", name, "Command not found.", NULL);
+		ft_error(st, "pipex", name, "Command not found", NULL);
 	return (cmd);
 }
 
@@ -122,7 +122,7 @@ bool	init(t_pipex *st, char  *argv[], char *env[])
 	st->argv1 = ft_split(argv[2], ' ');
 	st->argv2 = ft_split(argv[3], ' ');
 	if (!st->argv1 || !st->argv2 || !st->argv1[0] || !st->argv2[0])
-		ft_error(st, "Empty command.", NULL);
+		ft_error(st, "No command specified.", NULL);
 	st->cmd1 = get_cmd(st, st->argv1[0], env);
 	st->cmd2 = get_cmd(st, st->argv2[0], env);
 	st->env = env;
