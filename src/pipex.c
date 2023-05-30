@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/26 14:04:41 by flauer           ###   ########.fr       */
+/*   Updated: 2023/05/30 15:39:42 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,25 @@ void	cleanup(t_pipex *st)
 		free(st->cmd1);
 	if (st->cmd2)
 		free(st->cmd2);
-	
+}
+
+void	ft_error(t_pipex *st, ...)
+{
+	va_list	args;
+	char	*message;
+
+	va_start(args, st);
+	cleanup(st);
+	message = va_arg(args, char *);
+	while (message)
+	{
+		write(STDERR_FILENO, message, ft_strlen(message));
+		write(STDERR_FILENO, ": ", 2);
+		message = va_arg(args, char *);
+	}
+	if (errno)
+		perror("asd");
+	exit(-1);
 }
 
 char	**get_env(char *env[], char *key)
@@ -63,7 +81,7 @@ char	**get_env(char *env[], char *key)
 	return (NULL);
 }
 
-char	*get_cmd(char *name, char *env[])
+char	*get_cmd(t_pipex *st, char *name, char *env[])
 {
 	char	**paths;
 	char	*path;
@@ -87,24 +105,26 @@ char	*get_cmd(char *name, char *env[])
 		++i;
 	}
 	free_splits(paths);
+	if (!cmd)
+		ft_error(st, "pipex", name, "Command not found.", NULL);
 	return (cmd);
 }
 
 bool	init(t_pipex *st, char  *argv[], char *env[])
 {
 	if (access(argv[1], R_OK))
-		return (false);
+		ft_error(st, argv[1], NULL);
 	if (!access(argv[4], F_OK) && access(argv[4], W_OK))
-		return (false);
+		ft_error(st, argv[4], NULL);
 	st->fd1 = open(argv[1], O_RDONLY);
 	st->fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	pipe(st->pipe);
-	st->argv1 = ft_split(argv[2], ' '); // what happens on empty string?
+	st->argv1 = ft_split(argv[2], ' ');
 	st->argv2 = ft_split(argv[3], ' ');
-	st->cmd1 = get_cmd(st->argv1[0], env);
-	st->cmd2 = get_cmd(st->argv2[0], env);
-	if (!st->cmd1 || !st->cmd2)
-		return (errno = ENOENT,false);
+	if (!st->argv1 || !st->argv2 || !st->argv1[0] || !st->argv2[0])
+		ft_error(st, "Empty command.", NULL);
+	st->cmd1 = get_cmd(st, st->argv1[0], env);
+	st->cmd2 = get_cmd(st, st->argv2[0], env);
 	st->env = env;
 	return (true);
 }
@@ -127,17 +147,26 @@ void	child(t_pipex *st)
 	perror(strerror(errno));
 }
 
+void	px_init_null(t_pipex *st)
+{
+	st->argv1 = NULL;
+	st->argv2 = NULL;
+	st->cmd1 = NULL;
+	st->cmd2 = NULL;
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	// create a data structure: 
 	t_pipex	st;
 
+	px_init_null(&st);
 	// input to be expected:
 	// 4 arguments: infile cmd1 cmd2 outfile
 	if (argc != 5)
 		return (write(STDERR_FILENO, "Input Error\n", 12));
-	if (!init(&st, argv, env))
-		return (cleanup(&st), perror(strerror(errno)), errno);
+	init(&st, argv, env);
+	
 	st.pid = fork();
 	if (st.pid)
 		parent(&st);
