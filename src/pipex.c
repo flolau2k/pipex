@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/01 09:57:45 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/01 10:03:17 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	ft_error(t_pipex *st, ...)
 		write(STDERR_FILENO, ": ", 2);
 		message = va_arg(args, char *);
 	}
+	va_end(args);
 	if (errno)
 		perror(NULL);
 	exit(-1);
