@@ -3,3 +3,4 @@ infile
 outfile
 obj/
 vgcore*
+*.dSYM
