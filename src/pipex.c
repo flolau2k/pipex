@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/02 11:24:39 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/02 14:13:59 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ void free_splits(char **arr)
 		++i;
 	}
 	free(arr);
-	arr = NULL;
 }
-
 
 void	cleanup(t_pipex *st)
 {
@@ -63,6 +61,27 @@ char	**get_env(char *env[], char *key)
 	return (NULL);
 }
 
+void	ft_errmsg(char *msg)
+{
+	char	*message;
+
+	message = ft_strjoin("pipex: ", msg);
+	perror(message);
+	free(message);
+	exit(1);
+}
+
+void	ft_err(char *msg)
+{
+	char	*message;
+
+	message = ft_strjoin("pipex: ", msg);
+	write(STDERR_FILENO, message, ft_strlen(message));
+	write(STDERR_FILENO, "\n", 1);
+	free(message);
+	exit(1);
+}
+
 char	*get_cmd_path(t_pipex *st, char *name, char *env[])
 {
 	char	**paths;
@@ -86,7 +105,7 @@ char	*get_cmd_path(t_pipex *st, char *name, char *env[])
 	}
 	free_splits(paths);
 	if (!cmd)
-		return (ft_strdup(name));
+		ft_err(name);
 	return (cmd);
 }
 
@@ -101,27 +120,6 @@ char	*get_cmd(t_pipex *st, char *name, char *env[])
 		return (ft_strdup(name));
 	else
 		return (get_cmd_path(st, name, env));
-}
-
-void	ft_errmsg(char *msg)
-{
-	char	*message;
-
-	message = ft_strjoin("pipex: ", msg);
-	perror(message);
-	free(message);
-	exit(1);
-}
-
-void	ft_err(char *msg)
-{
-	char	*message;
-
-	message = ft_strjoin("pipex: ", msg);
-	write(STDERR_FILENO, message, ft_strlen(message));
-	write(STDERR_FILENO, "\n", 1);
-	free(message);
-	exit(1);
 }
 
 void	init(t_pipex *st, char  *argv[], char *env[])
