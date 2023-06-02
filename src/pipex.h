@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/05/17 16:47:19 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/02 11:20:01 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_pipex
 	char	**argv2;
 	int		pipe[2];
 	int		pid;
+	int		stat;
 	char	**env;
 }	t_pipex;
 

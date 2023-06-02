@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/01 16:39:17 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/02 11:24:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,6 @@ void free_splits(char **arr)
 	arr = NULL;
 }
 
-// int	ft_arrlen(char **arr)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (arr && arr[i])
-// 		++i;
-// 	return (i);
-// }
 
 void	cleanup(t_pipex *st)
 {
@@ -47,30 +38,6 @@ void	cleanup(t_pipex *st)
 	if (st->cmd2)
 		free(st->cmd2);
 }
-
-// void	ft_error(t_pipex *st, ...)
-// {
-// 	va_list	args;
-// 	char	*message;
-
-// 	va_start(args, st);
-// 	message = va_arg(args, char *);
-// 	if (message)
-// 	{
-// 		write(STDERR_FILENO, message, ft_strlen(message));
-// 		message = va_arg(args, char *);
-// 		while (message)
-// 		{
-// 			write(STDERR_FILENO, ": ", 2);
-// 			write(STDERR_FILENO, message, ft_strlen(message));
-// 			message = va_arg(args, char *);
-// 		}
-// 		write(STDERR_FILENO, "\n", 1);
-// 	}
-// 	va_end(args);
-// 	cleanup(st);
-// 	// exit(1);
-// }
 
 char	**get_env(char *env[], char *key)
 {
@@ -96,31 +63,6 @@ char	**get_env(char *env[], char *key)
 	return (NULL);
 }
 
-// char	*get_cmd_pwd(t_pipex *st, char *name, char *env[])
-// {
-// 	char	**pwd;
-// 	char	*cmd;
-// 	char	*tname;
-
-// 	pwd = get_env(env, "PWD=");
-// 	if (ft_arrlen(pwd) != 1)
-// 	{
-// 		free_splits(pwd);
-// 		ft_error(st, "pipex: could not get pwd!");
-// 	}
-// 	tname = ft_strtrim(name, ".");
-// 	cmd = ft_strjoin(*pwd, tname);
-// 	free_splits(pwd);
-// 	free(tname);
-// 	if (access(cmd, X_OK))
-// 	{
-// 		perror(name);
-// 		free(cmd);
-// 		ft_error(st, NULL);
-// 	}
-// 	return (cmd);
-// }
-
 char	*get_cmd_path(t_pipex *st, char *name, char *env[])
 {
 	char	**paths;
@@ -144,7 +86,7 @@ char	*get_cmd_path(t_pipex *st, char *name, char *env[])
 	}
 	free_splits(paths);
 	if (!cmd)
-		return (ft_strdup(name)); // ft_error(st, "pipex", name, "Command not found", NULL);
+		return (ft_strdup(name));
 	return (cmd);
 }
 
@@ -157,32 +99,41 @@ char	*get_cmd(t_pipex *st, char *name, char *env[])
 		return (NULL);
 	if (name[0] == '/' || ft_strnstr(name, "./", 2) == name)
 		return (ft_strdup(name));
-	// if (name[0] == '/')
-	// {
-	// 	cmd = ft_strdup(name);
-	// 	if (access(cmd, X_OK))
-	// 	{
-	// 		perror("pipex");
-	// 		free(cmd);
-	// 		ft_error(st, NULL);
-	// 	}
-	// 	return (cmd);
-	// }
-	// if (ft_strnstr(name, "./", 2) == name)
-	// 	return (get_cmd_pwd(st, name, env));
 	else
 		return (get_cmd_path(st, name, env));
+}
+
+void	ft_errmsg(char *msg)
+{
+	char	*message;
+
+	message = ft_strjoin("pipex: ", msg);
+	perror(message);
+	free(message);
+	exit(1);
+}
+
+void	ft_err(char *msg)
+{
+	char	*message;
+
+	message = ft_strjoin("pipex: ", msg);
+	write(STDERR_FILENO, message, ft_strlen(message));
+	write(STDERR_FILENO, "\n", 1);
+	free(message);
+	exit(1);
 }
 
 void	init(t_pipex *st, char  *argv[], char *env[])
 {
 	if (access(argv[1], R_OK))
-		perror(argv[1]);
+		ft_errmsg(argv[1]);
 	if (!access(argv[4], F_OK) && access(argv[4], W_OK))
-		perror(argv[4]);
+		ft_errmsg(argv[4]);
 	st->fd1 = open(argv[1], O_RDONLY);
 	st->fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	pipe(st->pipe);
+	if (pipe(st->pipe))
+		ft_errmsg("pipex: pipe");
 	st->argv1 = ft_split(argv[2], ' ');
 	st->argv2 = ft_split(argv[3], ' ');
 	st->cmd1 = get_cmd(st, st->argv1[0], env);
@@ -190,8 +141,10 @@ void	init(t_pipex *st, char  *argv[], char *env[])
 	st->env = env;
 }
 
-void	parent(t_pipex *st)
+void	child(t_pipex *st)
 {
+	char *msg;
+
 	dup2(st->pipe[1], STDOUT_FILENO); // redirect STDOUT to pipe input. close STDOUT, and dup st->pipe[1] to STDOUT
 	dup2(st->fd1, STDIN_FILENO); // redirect stdin to infile
 	close(st->pipe[0]);
@@ -199,13 +152,17 @@ void	parent(t_pipex *st)
 	close(st->fd1);
 	close(st->fd2);
 	if (!st->cmd1)
-		return ;
+		ft_err("no command specified!");
 	execve(st->cmd1, st->argv1, st->env);
-	perror("pipex");
+	msg = ft_strjoin("pipex: parent: ", st->cmd1);
+	perror(msg);
+	free(msg);
 }
 
-void	child(t_pipex *st)
+void	parent(t_pipex *st)
 {
+	char *msg;
+
 	dup2(st->pipe[0], STDIN_FILENO); // redirect STDIN to pipe output
 	dup2(st->fd2, STDOUT_FILENO);
 	close(st->pipe[0]);
@@ -213,9 +170,11 @@ void	child(t_pipex *st)
 	close(st->fd1);
 	close(st->fd2);
 	if (!st->cmd2)
-		return ;
+		ft_err("no command specified!");
 	execve(st->cmd2, st->argv2, st->env);
-	perror("pipex");
+	msg = ft_strjoin("pipex: child: ", st->cmd2);
+	perror(msg);
+	free(msg);
 }
 
 void	px_init_null(t_pipex *st)
@@ -237,9 +196,13 @@ int	main(int argc, char *argv[], char *env[])
 	if ((st.pid = fork()) == -1)
 		perror("pipex: fork");
 	if (st.pid)
-		parent(&st);
+	{
+		wait(&st.stat);
+		if (WIFEXITED(st.stat) && WEXITSTATUS(st.stat) == 0)
+			parent(&st);
+	}
 	else
 		child(&st);
 	cleanup(&st);
-	return (0);
+	return (WEXITSTATUS(st.stat));
 }
