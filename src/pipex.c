@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:46:27 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:48:15 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	child(int *pipe, char **argv, char **env)
 	int		file;
 	char	**args;
 
-	file =  open(argv[1], O_RDONLY);
+	file = open(argv[1], O_RDONLY);
 	if (file == -1)
 		ft_errp(argv[1]);
 	dup2(pipe[1], STDOUT_FILENO);
@@ -92,8 +92,12 @@ int	main(int argc, char *argv[], char *env[])
 		return (write(STDERR_FILENO, ERRMSG, 51));
 	if (pipe(pipefd) == -1)
 		perror("pipex: pipe");
-	if ((pid = fork()) == -1)
+	pid = fork();
+	if (pid == -1)
+	{
 		perror("pipex: fork");
+		exit(127);
+	}
 	if (pid)
 		parent(pipefd, argv, env);
 	else
