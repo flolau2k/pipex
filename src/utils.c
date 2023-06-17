@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:16:52 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:31:01 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	ft_errp(char *msg)
 	}
 	else
 		perror("pipex: ");
-	exit(1);
+	exit(127);
 }
 
 void	ft_err(char *msg)
@@ -73,7 +73,7 @@ void	ft_err(char *msg)
 	write(STDERR_FILENO, "\n", 1);
 	free(message);
 	free(msg);
-	exit(1);
+	exit(127);
 }
 
 char	*get_cmd_path(char *name, char *env[])
@@ -98,7 +98,5 @@ char	*get_cmd_path(char *name, char *env[])
 		++i;
 	}
 	free_splits(paths);
-	if (!cmd)
-		return (ft_strdup(name));
 	return (cmd);
 }
