@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 12:30:38 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:18:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,28 @@ char	*get_cmd(char *name, char *env[])
 		return (get_cmd_path(name, env));
 }
 
-void	child(int *pipe, char **argv, char **env)
+void	execute(char **args, char **env)
 {
 	char	*msg;
+	char	*cmd_msg;
+	char	*cmd;
+
+	cmd = get_cmd(args[0], env);
+	if (execve(cmd, args, env) == -1)
+	{
+		cmd_msg = ft_strjoin(cmd, ": ");
+		msg = ft_strjoin(cmd_msg, strerror(errno));
+		free(cmd_msg);
+		free(cmd);
+		free_splits(args);
+		ft_err(msg);
+	}
+}
+
+void	child(int *pipe, char **argv, char **env)
+{
 	int		file;
 	char	**args;
-	char	*cmd;
 
 	file =  open(argv[1], O_RDONLY);
 	if (file == -1)
@@ -41,22 +57,13 @@ void	child(int *pipe, char **argv, char **env)
 	close(pipe[1]);
 	close(file);
 	args = ft_split(argv[2], ' ');
-	cmd = get_cmd(args[0], env);
-	if (execve(cmd, args, env) == -1)
-	{
-		msg = strerror(errno);
-		free(cmd);
-		free(args);
-		ft_err(msg);
-	}
+	execute(args, env);
 }
 
 void	parent(int *pipe, char **argv, char **env)
 {
-	char	*msg;
 	int		file;
 	char	**args;
-	char	*cmd;
 
 	file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (file == -1)
@@ -67,21 +74,13 @@ void	parent(int *pipe, char **argv, char **env)
 	close(pipe[1]);
 	close(file);
 	args = ft_split(argv[3], ' ');
-	cmd = get_cmd(args[0], env);
-	if (execve(cmd, args, env) == -1)
-	{
-		msg = strerror(errno);
-		free(cmd);
-		free(args);
-		ft_err(msg);
-	}
+	execute(args, env);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
 	pid_t	pid;
 	int		pipefd[2];
-	int		stat;
 
 	if (argc != 5)
 		return (write(STDERR_FILENO, ERRMSG, 51));
@@ -92,10 +91,9 @@ int	main(int argc, char *argv[], char *env[])
 	if (pid)
 	{
 		waitpid(pid, NULL, 0);
-		if (WIFEXITED(stat) && WEXITSTATUS(stat) == 0)
-			parent(pipefd, argv, env);
+		parent(pipefd, argv, env);
 	}
 	else
 		child(pipefd, argv, env);
-	return (WEXITSTATUS(stat));
+	return (0);
 }

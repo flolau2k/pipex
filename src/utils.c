@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 12:30:03 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:16:52 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	ft_err(char *msg)
 	write(STDERR_FILENO, "\n", 1);
 	free(message);
 	free(msg);
-	exit(-1);
+	exit(1);
 }
 
 char	*get_cmd_path(char *name, char *env[])
@@ -99,6 +99,6 @@ char	*get_cmd_path(char *name, char *env[])
 	}
 	free_splits(paths);
 	if (!cmd)
-		ft_err(name);
+		return (ft_strdup(name));
 	return (cmd);
 }
