@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/02 11:20:01 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 12:30:56 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,17 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include "../libft/include/libft.h"
+# define ERRMSG "Input Error: expected infile \"cmd1\" \"cmd2\" outfile\n"
 
-typedef struct s_pipex
-{
-	int		fd1;
-	int		fd2;
-	char	*cmd1;
-	char	*cmd2;
-	char	**argv1;
-	char	**argv2;
-	int		pipe[2];
-	int		pid;
-	int		stat;
-	char	**env;
-}	t_pipex;
-
+char	*get_cmd(char *name, char *env[]);
+void	child(int *pipe, char **argv, char **env);
+void	parent(int *pipe, char **argv, char **env);
 int		main(int argc, char *argv[], char *env[]);
 
-void	child(t_pipex *st);
+void	free_splits(char **arr);
+char	**get_env(char *env[], char *key);
+void	ft_errp(char *msg);
+void	ft_err(char *msg);
+char	*get_cmd_path(char *name, char *env[]);
 
 #endif
