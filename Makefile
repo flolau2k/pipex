@@ -6,22 +6,21 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/01 09:56:30 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/17 13:45:45 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =		pipex
 
 CC =		cc
-#CFLAGS =	-g -Wall -Wextra -Werror
-CFLAGS = -g
+CFLAGS =	-g -Wall -Wextra -Werror
 
 LIBFT =		libft/libft.a
 
 OBJDIR =	obj/
 SRCDIR =	src/
 
-FILES =		pipex.c
+FILES =		pipex.c utils.c
 
 SRC =		$(addprefix $(SRCDIR), $(FILES))
 OBJ =		$(addprefix $(OBJDIR), $(FILES:%.c=%.o))
