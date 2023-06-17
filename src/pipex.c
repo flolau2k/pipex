@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:45:06 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:46:27 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	main(int argc, char *argv[], char *env[])
 	if (argc != 5)
 		return (write(STDERR_FILENO, ERRMSG, 51));
 	if (pipe(pipefd) == -1)
-		perror("pipex: pipe:");
+		perror("pipex: pipe");
 	if ((pid = fork()) == -1)
 		perror("pipex: fork");
 	if (pid)
