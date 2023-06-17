@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:26:44 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:45:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,7 @@ int	main(int argc, char *argv[], char *env[])
 	if ((pid = fork()) == -1)
 		perror("pipex: fork");
 	if (pid)
-	{
-		waitpid(pid, NULL, 0);
 		parent(pipefd, argv, env);
-	}
 	else
 		child(pipefd, argv, env);
 	return (0);
