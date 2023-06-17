@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:49:07 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/17 13:59:16 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 char	*get_cmd(char *name, char *env[]);
 void	child(int *pipe, char **argv, char **env);
 void	parent(int *pipe, char **argv, char **env);
-int		main(int argc, char *argv[], char *env[]);
+// int		main(int argc, char *argv[], char *env[]);
 
 void	free_splits(char **arr);
 char	**get_env(char *env[], char *key);
