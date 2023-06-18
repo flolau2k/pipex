@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/18 15:16:44 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/18 15:23:54 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,8 +56,11 @@ bonus: $(LIBFT) $(OBJ_BONUS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_BONUS) -Llibft -lft
 	@echo "built $(NAME)"
 
-$(OBJDIR_B)%.o: $(SRC_BONUS)%.c | $(OBJDIR)
+$(OBJDIR_B)%.o: $(SRC_BONUS)%.c | $(OBJDIR_B)
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJDIR_B):
+	@mkdir -p $(@D)
 
 $(LIBFT):
 	@git submodule update --init --recursive --remote
