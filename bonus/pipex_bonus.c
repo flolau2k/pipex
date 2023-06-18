@@ -6,11 +6,11 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/18 15:18:31 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/18 17:10:43 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 char	*get_cmd(char *name, char *env[])
 {
@@ -46,24 +46,7 @@ void	execute(char **args, char **env)
 	}
 }
 
-void	child(int *pipe, char **argv, char **env)
-{
-	int		file;
-	char	**args;
-
-	file = open(argv[1], O_RDONLY);
-	if (file == -1)
-		ft_errp(argv[1]);
-	dup2(pipe[1], STDOUT_FILENO);
-	dup2(file, STDIN_FILENO);
-	close(pipe[0]);
-	close(pipe[1]);
-	close(file);
-	args = ft_split(argv[2], ' ');
-	execute(args, env);
-}
-
-void	parent(int *pipe, char **argv, char **env)
+void	parent(int *pipe, int i, char **argv, char **env)
 {
 	int		file;
 	char	**args;
@@ -80,14 +63,29 @@ void	parent(int *pipe, char **argv, char **env)
 	execute(args, env);
 }
 
-int	main(int argc, char *argv[], char *env[])
+void	child(int *pipe, int i, char **argv, char **env)
+{
+	int		file;
+	char	**args;
+
+	file = open(argv[1], O_RDONLY);
+	if (file == -1)
+		ft_errp(argv[1]);
+	dup2(pipe[1], STDOUT_FILENO);
+	dup2(file, STDIN_FILENO);
+	close(pipe[0]);
+	close(pipe[1]);
+	close(file);
+	args = ft_split(argv[2], ' ');
+	execute(args, env);
+}
+
+void	create_pipe(int i, char *argv[], char *env[])
 {
 	pid_t	pid;
-	int		pipefd[2];
+	int		pipe_fd[2];
 
-	if (argc != 5)
-		return (write(STDERR_FILENO, ERRMSG, 51));
-	if (pipe(pipefd) == -1)
+	if (pipe(pipe_fd) == -1)
 		perror("pipex: pipe");
 	pid = fork();
 	if (pid == -1)
@@ -96,8 +94,44 @@ int	main(int argc, char *argv[], char *env[])
 		exit(127);
 	}
 	if (pid)
-		parent(pipefd, argv, env);
+		parent(pipe_fd, i, argv, env);
 	else
-		child(pipefd, argv, env);
+		child(pipe_fd, i, argv, env);
+}
+
+int	main(int argc, char *argv[], char *env[])
+{
+	int		i;
+	pid_t	pid;
+	int		pipefd[2];
+
+	i = 0;
+	if (argc < 5)
+		return (write(STDERR_FILENO, ERRMSG, 62), 127);
+	while (i < argc - 3)
+	{
+		if (pipe(pipefd) == -1)
+			perror("pipex: pipe");
+		pid = fork();
+		if (pid == -1)
+			perror("pipex: fork");
+		if (pid == 0)
+			child(pipefd, i, argv, env);
+		else
+		++i;
+	}
+	
+	// if (pipe(pipefd) == -1)
+	// 	perror("pipex: pipe");
+	// pid = fork();
+	// if (pid == -1)
+	// {
+	// 	perror("pipex: fork");
+	// 	exit(127);
+	// }
+	// if (pid)
+	// 	parent(pipefd, argv, env);
+	// else
+	// 	child(pipefd, argv, env);
 	return (0);
 }

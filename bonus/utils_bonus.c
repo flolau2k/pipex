@@ -6,11 +6,11 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/18 15:18:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/18 15:51:09 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	free_splits(char **arr)
 {
