@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 17:20:23 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/18 14:27:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,24 +46,25 @@ void	execute(char **args, char **env)
 	}
 }
 
-char	**args_trim(char **args)
-{
-	char	**ret;
-	int		i;
-
-	i = 0;
-	while (args[i])
-		++i;
-	ret = ft_calloc(i + 1, sizeof(char *));
-	while (--i >= 0)
-		ret[i] = ft_strtrim(args[i], "\"");
-	free_splits(args);
-	return (ret);
-}
-
-// char	**ft_splitq(const char *s)
+// char	**args_trim(char **args)
 // {
 // 	char	**ret;
+// 	int		i;
+
+// 	i = 0;
+// 	while (args[i])
+// 		++i;
+// 	ret = ft_calloc(i + 1, sizeof(char *));
+// 	while (--i >= 0)
+// 		ret[i] = ft_strtrim(args[i], "\"");
+// 	free_splits(args);
+// 	return (ret);
+// }
+
+// char	**ft_splitargs(const char *s)
+// {
+// 	char	**ret;
+
 	
 // }
 
@@ -81,7 +82,6 @@ void	child(int *pipe, char **argv, char **env)
 	close(pipe[1]);
 	close(file);
 	args = ft_split(argv[2], ' ');
-	// args = args_trim(args);
 	execute(args, env);
 }
 
@@ -99,7 +99,6 @@ void	parent(int *pipe, char **argv, char **env)
 	close(pipe[1]);
 	close(file);
 	args = ft_split(argv[3], ' ');
-	// args = args_trim(args);
 	execute(args, env);
 }
 
