@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+         #
+#    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/18 15:23:54 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/19 11:52:13 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,18 +17,18 @@ CFLAGS =	-g -Wall -Wextra -Werror
 
 LIBFT =		libft/libft.a
 
-OBJDIR =	obj/
-SRCDIR =	src/
-BONUSDIR =	bonus/
-OBJDIR_B =	obj_bonus/
+OBJDIR =	obj
+SRCDIR =	src
+BONUSDIR =	bonus
+OBJDIR_B =	obj_bonus
 
 FILES =		pipex.c utils.c
 F_BONUS =	pipex_bonus.c utils_bonus.c
 
-SRC =		$(addprefix $(SRCDIR), $(FILES))
-OBJ =		$(addprefix $(OBJDIR), $(FILES:%.c=%.o))
-SRC_BONUS =	$(addprefix $(BONUSDIR), $(F_BONUS))
-OBJ_BONUS = $(addprefix $(OBJDIR_B), $(F_BONUS:%.c=%.o))
+SRC =		$(addprefix $(SRCDIR)/, $(FILES))
+OBJ =		$(addprefix $(OBJDIR)/, $(FILES:%.c=%.o))
+SRC_BONUS =	$(addprefix $(BONUSDIR)/, $(F_BONUS))
+OBJ_BONUS = $(addprefix $(OBJDIR_B)/, $(F_BONUS:%.c=%.o))
 
 all: $(NAME)
 
@@ -36,11 +36,11 @@ $(NAME): $(LIBFT) $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -Llibft -lft
 	@echo "built $(NAME)"
 
-$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR):
-	@mkdir -p $(@D)
+	@mkdir -p $(OBJDIR)
 
 clean:
 	make -C libft clean
@@ -60,7 +60,7 @@ $(OBJDIR_B)%.o: $(SRC_BONUS)%.c | $(OBJDIR_B)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR_B):
-	@mkdir -p $(@D)
+	@mkdir -p $(OBJDIR_B)
 
 $(LIBFT):
 	@git submodule update --init --recursive --remote
