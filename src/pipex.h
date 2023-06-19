@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/18 15:24:21 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:31:40 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@ char	**get_env(char *env[], char *key);
 void	ft_errp(char *msg);
 void	ft_err(char *msg);
 char	*get_cmd_path(char *name, char *env[]);
+
+char	**split_cmd(const char *s);
 
 #endif
