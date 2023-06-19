@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/17 13:49:15 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 15:02:21 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_errp(char *msg)
 		free(message);
 	}
 	else
-		perror("pipex: ");
+		perror("pipex");
 	exit(127);
 }
 
