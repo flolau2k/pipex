@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/19 11:52:13 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/19 12:12:34 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,7 @@ bonus: $(LIBFT) $(OBJ_BONUS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_BONUS) -Llibft -lft
 	@echo "built $(NAME)"
 
-$(OBJDIR_B)%.o: $(SRC_BONUS)%.c | $(OBJDIR_B)
+$(OBJDIR_B)/%.o: $(BONUSDIR)/%.c | $(OBJDIR_B)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR_B):
