@@ -2,5 +2,6 @@ pipex
 infile*
 outfile*
 obj/
+obj_bonus/
 vgcore*
 *.dSYM
