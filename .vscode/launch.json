@@ -33,7 +33,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/pipex",
-			"args": ["infile", "/bin/cat", "/usr/bin/wc -l", "outfile"],
+			"args": ["infile", "sed \"s/And/But/\"", "awk '{count++} END {print count}'", "outfile"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

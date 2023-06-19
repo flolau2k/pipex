@@ -1,6 +1,6 @@
 pipex
-infile
-outfile
+infile*
+outfile*
 obj/
 vgcore*
 *.dSYM
