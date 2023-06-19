@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/19 12:12:34 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/19 16:04:28 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ BONUSDIR =	bonus
 OBJDIR_B =	obj_bonus
 
 FILES =		pipex.c utils.c
-F_BONUS =	pipex_bonus.c utils_bonus.c
+F_BONUS =	pipex_bonus.c utils_bonus.c here_doc_bonus.c
 
 SRC =		$(addprefix $(SRCDIR)/, $(FILES))
 OBJ =		$(addprefix $(OBJDIR)/, $(FILES:%.c=%.o))

@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 12:21:55 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:03:53 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,19 @@ int	main(int argc, char *argv[], char *env[])
 	i = 2;
 	if (argc < 5)
 		return (write(STDERR_FILENO, ERRMSG, 62), 127);
-	file = open(argv[1], O_RDONLY);
-	if (file == -1)
-		ft_errp(argv[1]);
-	dup2(file, STDIN_FILENO);
+	if (ft_strnstr(argv[1], "here_doc", 8) == argv[1])
+	{
+		if (argc < 6)
+			return (write(STDERR_FILENO, ERRMSG_HD, 45), 127);
+		here_doc(argv, env);
+	}
+	else
+	{
+		file = open(argv[1], O_RDONLY);
+		if (file == -1)
+			ft_errp(argv[1]);
+		dup2(file, STDIN_FILENO);
+	}
 	while (i < argc - 2)
 	{
 		create_pipe(i, argv, env);
