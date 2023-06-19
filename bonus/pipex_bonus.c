@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 16:03:53 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:22:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ void	create_pipe(int i, char *argv[], char *env[])
 int	main(int argc, char *argv[], char *env[])
 {
 	int		i;
-	int		file;
+	int		infile;
+	int		outfile;
 
 	i = 2;
 	if (argc < 5)
@@ -86,23 +87,27 @@ int	main(int argc, char *argv[], char *env[])
 	{
 		if (argc < 6)
 			return (write(STDERR_FILENO, ERRMSG_HD, 45), 127);
-		here_doc(argv, env);
+		outfile = open(argv[argc - 1], O_WRONLY | O_APPEND | O_CREAT, 0644);
+		if (outfile == -1)
+			ft_errp(argv[argc - 1]);
+		here_doc(argv);
 	}
 	else
 	{
-		file = open(argv[1], O_RDONLY);
-		if (file == -1)
+		infile = open(argv[1], O_RDONLY);
+		if (infile == -1)
 			ft_errp(argv[1]);
-		dup2(file, STDIN_FILENO);
+		dup2(infile, STDIN_FILENO);
+		outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (outfile == -1)
+			ft_errp(argv[argc - 1]);
+		dup2(outfile, STDOUT_FILENO);
 	}
 	while (i < argc - 2)
 	{
 		create_pipe(i, argv, env);
 		++i;
 	}
-	file = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (file == -1)
-		ft_errp(argv[argc - 1]);
 	execute(argv[argc - 2], env);
 	return (0);
 }

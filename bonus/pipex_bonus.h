@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 15:56:21 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:21:54 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_errp(char *msg);
 void	ft_err(char *msg);
 char	*get_cmd_path(char *name, char *env[]);
 
-void	here_doc(char *argv[], char *env[]);
-void	child(int *pipe, char *argv[], char *env[]);
+void	here_doc(char *argv[]);
+void	child(int *pipe, char *argv[]);
 
 #endif

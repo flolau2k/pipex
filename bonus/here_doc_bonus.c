@@ -6,13 +6,13 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:27:25 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 16:03:38 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:21:52 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-void	child(int *pipe, char *argv[], char *env[])
+void	child(int *pipe, char *argv[])
 {
 	char	*lim;
 	char	*line;
@@ -30,7 +30,7 @@ void	child(int *pipe, char *argv[], char *env[])
 	exit(0);
 }
 
-void	here_doc(char *argv[], char *env[])
+void	here_doc(char *argv[])
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -41,7 +41,7 @@ void	here_doc(char *argv[], char *env[])
 	if (pid == -1)
 		ft_errp("fork");
 	if (pid == 0)
-		child(pipe_fd, argv, env);
+		child(pipe_fd, argv);
 	else
 	{
 		dup2(pipe_fd[0], STDIN_FILENO);
