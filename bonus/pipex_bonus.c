@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 12:09:03 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 12:21:55 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,40 +48,6 @@ void	execute(char *args, char **env)
 	}
 }
 
-// void	parent(int *pipe, int i, char **argv, char **env)
-// {
-// 	int		file;
-// 	char	**args;
-
-// 	file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-// 	if (file == -1)
-// 		ft_errp(argv[4]);
-// 	dup2(pipe[0], STDIN_FILENO);
-// 	dup2(file, STDOUT_FILENO);
-// 	close(pipe[0]);
-// 	close(pipe[1]);
-// 	close(file);
-// 	args = ft_split(argv[3], ' ');
-// 	execute(args, env);
-// }
-
-// void	child(int *pipe, int i, char **argv, char **env)
-// {
-// 	int		file;
-// 	char	**args;
-
-// 	file = open(argv[1], O_RDONLY);
-// 	if (file == -1)
-// 		ft_errp(argv[1]);
-// 	dup2(pipe[1], STDOUT_FILENO);
-// 	dup2(file, STDIN_FILENO);
-// 	close(pipe[0]);
-// 	close(pipe[1]);
-// 	close(file);
-// 	args = ft_split(argv[2], ' ');
-// 	execute(args, env);
-// }
-
 void	create_pipe(int i, char *argv[], char *env[])
 {
 	pid_t	pid;
@@ -111,14 +77,23 @@ void	create_pipe(int i, char *argv[], char *env[])
 int	main(int argc, char *argv[], char *env[])
 {
 	int		i;
+	int		file;
 
-	i = 0;
+	i = 2;
 	if (argc < 5)
 		return (write(STDERR_FILENO, ERRMSG, 62), 127);
-	while (i < argc - 3)
+	file = open(argv[1], O_RDONLY);
+	if (file == -1)
+		ft_errp(argv[1]);
+	dup2(file, STDIN_FILENO);
+	while (i < argc - 2)
 	{
 		create_pipe(i, argv, env);
 		++i;
 	}
+	file = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (file == -1)
+		ft_errp(argv[argc - 1]);
+	execute(argv[argc - 2], env);
 	return (0);
 }
