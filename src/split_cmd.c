@@ -3,30 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   split_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 20:47:57 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/20 15:57:55 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static size_t	ft_strlen_delimiter(char const *s, const char *quotes)
+static size_t	ft_strlen_delimiter(char const *s)
 {
 	size_t	ret;
+	char	quotes;
 
 	ret = 0;
-	if (quotes && !*quotes)
+	quotes = 0;
+	if (s[ret] && (s[ret] == '\'' || s[ret] == '\"'))
 	{
-		while (s[ret] && s[ret] != ' ')
-			ret++;
+		quotes = s[ret];
+		++ret;
 	}
-	else
-	{
-		while (s[ret] && s[ret] != *quotes)
-			ret++;
-	}
+	while (!quotes && s[ret] && s[ret] != ' ')
+		ret++;
+	while (quotes && s[ret] && s[ret] != quotes)
+		ret++;
+	if (quotes && s[ret] == quotes)
+		ret++;
 	return (ret);
 }
 
@@ -58,7 +61,7 @@ static size_t	ft_num_substr(char const *s)
 	}
 	while (s[i])
 	{
-		if (s[i] == ' ' && s[i +1] && s[i +1] != ' ' && !quotes)
+		if (!quotes && s[i] == ' ' && s[i +1] && s[i +1] != ' ')
 			num_substr++;
 		if (quotes && quotes == s[i])
 			quotes = 0;
@@ -76,10 +79,8 @@ char	**split_cmd(const char *s)
 	size_t	num_substr;
 	char	*curr_start;
 	size_t	curr_len;
-	char	quotes;
 
 	i = -1;
-	quotes = 0;
 	num_substr = ft_num_substr(s);
 	curr_start = (char *) ft_find_next_substr(s);
 	ret = ft_calloc(num_substr + 1, sizeof(char *));
@@ -87,14 +88,14 @@ char	**split_cmd(const char *s)
 		return (NULL);
 	while (++i < num_substr)
 	{
-		curr_len = ft_strlen_delimiter(curr_start, &quotes);
+		curr_len = ft_strlen_delimiter(curr_start);
 		ret[i] = ft_substr(curr_start, 0, curr_len);
 		if (!ret[i])
 		{
-			ft_free_str_arr(ret);
+			free_splits(ret);
 			return (NULL);
 		}
-		curr_start = (char *) ft_find_next_substr(curr_start + curr_len, c);
+		curr_start = (char *) ft_find_next_substr(curr_start + curr_len);
 	}
 	return (ret);
 }
