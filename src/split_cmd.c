@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/20 17:07:57 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/21 09:47:09 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ char	**split_cmd(const char *s)
 {
 	char	**ret;
 	size_t	i;
-	size_t	num_substr;
 	char	*curr_start;
 	size_t	curr_len;
 	char	quotes;
@@ -99,3 +98,26 @@ char	**split_cmd(const char *s)
 	}
 	return (ret);
 }
+
+// int	main(int argc, char *argv[])
+// {
+// 	int		i;
+// 	int		j;
+// 	char	**splits;
+
+// 	i = 0;
+// 	while (i < argc)
+// 	{
+// 		splits = split_cmd(argv[i]);
+// 		j = 0;
+// 		while (splits[j])
+// 		{
+// 			ft_printf("%s, ", splits[j]);
+// 			++j;
+// 		}
+// 		ft_printf("\n");
+// 		free_splits(splits);
+// 		++i;
+// 	}
+// 	return (0);
+// }
