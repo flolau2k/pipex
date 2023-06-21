@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 17:37:21 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/21 21:31:57 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ static void	handle_soft_quotes(t_list **lst, char **pos)
 	{
 		if (*pos[i] == '\\')
 		{
-			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i])));
 			++i;
+			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i], 0, 1)));
 		}
-		else if (*pos[i] == '\"' && *pos[i - 1] && *pos[i - 1] == "\\")
-
+		else
+			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i], 0, 1)));
 		++i;
 	}
 	*pos = *pos + i;
@@ -73,6 +73,34 @@ static void	handle_substr(t_list **lst, char **pos)
 		++i;
 	ft_lstadd_back(lst, ft_lstnew(ft_substr(*pos, 0, i)));
 	*pos = *pos + i;
+}
+
+static char	*lst_to_str(t_list **lst)
+{
+	
+}
+
+static char	**list_to_arr(t_list **lst)
+{
+	int		len;
+	int		i;
+	char	**ret;
+	t_list	*curr_elm;
+
+	if (!*lst)
+		return (NULL);
+	len = ft_lstsize(*lst);
+	i = 0;
+	curr_elm = *lst;
+	ret = ft_calloc(len + 1, sizeof(char *));
+	while (i < len)
+	{
+		ret[i] = ft_strdup(curr_elm->content);
+		++i;
+		curr_elm = curr_elm->next;
+	}
+	ft_lstclear(lst, free);
+	return (ret);
 }
 
 char	**split_cmd(const char *s)

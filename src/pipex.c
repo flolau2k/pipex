@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 15:11:13 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/21 21:16:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ pid_t	create_pipe(char *cmd, char *args[], char *env[])
 
 int	main(int argc, char *argv[], char *env[])
 {
-	pid_t	pid;
 	int		infile;
 	int		outfile;
+	char	**args;
 
 	if (argc != 5)
 		return (write(STDERR_FILENO, ERRMSG, 51));
@@ -85,13 +85,16 @@ int	main(int argc, char *argv[], char *env[])
 	if (infile == -1)
 		ft_errp(argv[1]);
 	dup2(infile, STDIN_FILENO);
-
-	pid = create_pipe(cmd, args, env);
+	args = ft_split(argv[2], ' ');
+	// check args here!
+	create_pipe(args[0], args, env);
 	outfile = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (outfile == -1)
 		ft_errp(argv[4]);
 	dup2(outfile, STDOUT_FILENO);
-	
+	free_splits(args);
+	args = ft_split(argv[3], ' ');
+	// check args here!
 	execute(args[0], args, env);
 	return (0);
 }
