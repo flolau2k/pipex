@@ -6,40 +6,38 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/20 15:57:55 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/20 17:07:57 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static size_t	ft_strlen_delimiter(char const *s)
+static size_t	ft_strlen_delimiter(char const *s, char *quotes)
 {
 	size_t	ret;
-	char	quotes;
 
 	ret = 0;
-	quotes = 0;
-	if (s[ret] && (s[ret] == '\'' || s[ret] == '\"'))
-	{
-		quotes = s[ret];
-		++ret;
-	}
-	while (!quotes && s[ret] && s[ret] != ' ')
+	while (!*quotes && s[ret] && s[ret] != ' ')
 		ret++;
-	while (quotes && s[ret] && s[ret] != quotes)
-		ret++;
-	if (quotes && s[ret] == quotes)
+	while (*quotes && s[ret] && s[ret] != *quotes)
 		ret++;
 	return (ret);
 }
 
-static const char	*ft_find_next_substr(const char *s)
+static const char	*ft_find_next_substr(const char *s, char *quotes)
 {
 	int	i;
 
 	i = 0;
+	if (*quotes && s[i] == *quotes)
+		i++;
 	while (s[i] && s[i] == ' ')
 		i++;
+	if (s[i] == '\'' || s[i] == '\"')
+	{
+		*quotes = s[i];
+		i++;
+	}
 	return (&s[i]);
 }
 
@@ -79,23 +77,25 @@ char	**split_cmd(const char *s)
 	size_t	num_substr;
 	char	*curr_start;
 	size_t	curr_len;
+	char	quotes;
 
 	i = -1;
+	quotes = 0;
 	num_substr = ft_num_substr(s);
-	curr_start = (char *) ft_find_next_substr(s);
+	curr_start = (char *) ft_find_next_substr(s, &quotes);
 	ret = ft_calloc(num_substr + 1, sizeof(char *));
 	if (!ret)
 		return (NULL);
 	while (++i < num_substr)
 	{
-		curr_len = ft_strlen_delimiter(curr_start);
+		curr_len = ft_strlen_delimiter(curr_start, &quotes);
 		ret[i] = ft_substr(curr_start, 0, curr_len);
 		if (!ret[i])
 		{
 			free_splits(ret);
 			return (NULL);
 		}
-		curr_start = (char *) ft_find_next_substr(curr_start + curr_len);
+		curr_start = (char *) ft_find_next_substr(curr_start + curr_len, &quotes);
 	}
 	return (ret);
 }
