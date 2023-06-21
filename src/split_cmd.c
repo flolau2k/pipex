@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 15:50:35 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/21 17:37:21 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,24 @@ static void	handle_strong_quotes(t_list **lst, char **pos)
 
 static void	handle_soft_quotes(t_list **lst, char **pos)
 {
-	int	i;
+	int		i;
+	t_list	*substr;
 
 	i = 0;
+	substr = NULL;
+	if (!*pos)
+		return (0);
 	++(*pos);
-	while (*pos[i] && *pos[i] != '\"')
+	while (pos[i] != "\"")
 	{
-		if (!*pos[i])
-			break;
-		else if (*pos[i] != '\"')
+		if (*pos[i] == '\\')
+		{
+			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i])));
 			++i;
+		}
 		else if (*pos[i] == '\"' && *pos[i - 1] && *pos[i - 1] == "\\")
 
+		++i;
 	}
 	*pos = *pos + i;
 }
