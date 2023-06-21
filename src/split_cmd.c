@@ -80,12 +80,11 @@ char	**split_cmd(const char *s)
 
 	i = -1;
 	quotes = 0;
-	num_substr = ft_num_substr(s);
 	curr_start = (char *) ft_find_next_substr(s, &quotes);
-	ret = ft_calloc(num_substr + 1, sizeof(char *));
+	ret = ft_calloc(ft_num_substr(s) + 1, sizeof(char *));
 	if (!ret)
 		return (NULL);
-	while (++i < num_substr)
+	while (++i < ft_num_substr(s))
 	{
 		curr_len = ft_strlen_delimiter(curr_start, &quotes);
 		ret[i] = ft_substr(curr_start, 0, curr_len);
