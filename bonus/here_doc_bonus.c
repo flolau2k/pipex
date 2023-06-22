@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:27:25 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 10:13:27 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 14:59:44 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	child(int *pipe, char *lim)
 		line = get_next_line(STDIN_FILENO);
 	}
 	free(line);
+	close(pipe[0]);
+	close(pipe[1]);
 	exit(0);
 }
 
