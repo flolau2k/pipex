@@ -3,76 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   split_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 16:30:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 21:31:57 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 09:28:44 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static char	*find_curr_start(const char *s)
+static size_t	ft_strlen_delimiter(char const *s, char *quotes)
 {
-	char	*ret;
+	size_t	ret;
 
-	ret = s;
-	while (ft_isspace(ret))
-		++ret;
+	ret = 0;
+	while (!*quotes && s[ret] && s[ret] != ' ')
+		ret++;
+	while (*quotes && s[ret] && s[ret] != *quotes)
+		ret++;
 	return (ret);
 }
 
-static void	handle_strong_quotes(t_list **lst, char **pos)
+static const char	*ft_find_next_substr(const char *s, char *quotes)
 {
 	int	i;
 
 	i = 0;
-	++(*pos);
-	while (*pos[i] && *pos[i] != '\'')
-		++i;
-	ft_lstadd_back(lst, ft_lstnew(ft_substr(*pos, 0, i)));
-	*pos = *pos + i;
-}
-
-static void	handle_soft_quotes(t_list **lst, char **pos)
-{
-	int		i;
-	t_list	*substr;
-
-	i = 0;
-	substr = NULL;
-	if (!*pos)
-		return (0);
-	++(*pos);
-	while (pos[i] != "\"")
+	if (*quotes && s[i] == *quotes)
+		i++;
+	while (s[i] && s[i] == ' ')
+		i++;
+	if (s[i] == '\'' || s[i] == '\"')
 	{
-		if (*pos[i] == '\\')
-		{
-			++i;
-			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i], 0, 1)));
-		}
-		else
-			ft_lstadd_back(&substr, ft_lstnew(ft_substr(*pos[i], 0, 1)));
-		++i;
+		*quotes = s[i];
+		i++;
 	}
-	*pos = *pos + i;
+	return (&s[i]);
 }
 
-static void	handle_substr(t_list **lst, char **pos)
+static size_t	ft_num_substr(char const *s)
 {
-	int		i;
+	size_t	num_substr;
+	size_t	i;
+	char	quotes;
 
 	i = 0;
-	if (!pos || !*pos)
-		return ;
-	if (*pos[i] == '\'')
-		handle_strong_quotes(lst, pos);
-	else if (*pos[i] == '\"')
-		handle_soft_quotes(lst, pos);
-	while (*pos[i] && !ft_isspace(*pos[i]))
-		++i;
-	ft_lstadd_back(lst, ft_lstnew(ft_substr(*pos, 0, i)));
-	*pos = *pos + i;
+	num_substr = 0;
+	quotes = 0;
+	if (s[i] && s[i] != ' ')
+	{
+		num_substr++;
+		if (s[i] == '\'' || s[i] == '\"')
+			quotes = s[i];
+		i++;
+	}
+	while (s[i])
+	{
+		if (!quotes && s[i] == ' ' && s[i +1] && s[i +1] != ' ')
+			num_substr++;
+		if (quotes && quotes == s[i])
+			quotes = 0;
+		else if (!quotes && (s[i] == '\'' || s[i] == '\"'))
+			quotes = s[i];
+		i++;
+	}
+	return (num_substr);
 }
 
 static char	*lst_to_str(t_list **lst)
@@ -106,16 +101,50 @@ static char	**list_to_arr(t_list **lst)
 char	**split_cmd(const char *s)
 {
 	char	**ret;
-	t_list	*args;
-	char	*curr_pos;
+	size_t	i;
+	char	*curr_start;
+	size_t	curr_len;
+	char	quotes;
 
-	args = NULL;
-	curr_pos = find_curr_start(s);
-	while (curr_pos)
+	i = -1;
+	quotes = 0;
+	curr_start = (char *) ft_find_next_substr(s, &quotes);
+	ret = ft_calloc(ft_num_substr(s) + 1, sizeof(char *));
+	if (!ret)
+		return (NULL);
+	while (++i < ft_num_substr(s))
 	{
-		handle_substr(&args, &curr_pos);
-		curr_pos = find_curr_start(curr_pos);
+		curr_len = ft_strlen_delimiter(curr_start, &quotes);
+		ret[i] = ft_substr(curr_start, 0, curr_len);
+		if (!ret[i])
+		{
+			free_splits(ret);
+			return (NULL);
+		}
+		curr_start = (char *) ft_find_next_substr(curr_start + curr_len, &quotes);
 	}
-	ret = list_to_arr(&args);
 	return (ret);
 }
+
+// int	main(int argc, char *argv[])
+// {
+// 	int		i;
+// 	int		j;
+// 	char	**splits;
+
+// 	i = 0;
+// 	while (i < argc)
+// 	{
+// 		splits = split_cmd(argv[i]);
+// 		j = 0;
+// 		while (splits[j])
+// 		{
+// 			ft_printf("%s, ", splits[j]);
+// 			++j;
+// 		}
+// 		ft_printf("\n");
+// 		free_splits(splits);
+// 		++i;
+// 	}
+// 	return (0);
+// }

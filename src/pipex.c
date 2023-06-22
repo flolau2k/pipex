@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 21:16:12 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 09:28:21 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,79 +22,79 @@ char	*get_cmd(char *name, char *env[])
 		return (get_cmd_path(name, env));
 }
 
-void	execute(char *cmd, char *args[], char *env[])
+void	execute(char **args, char **env)
 {
 	char	*msg;
 	char	*cmd_msg;
-	char	*path;
+	char	*cmd;
 
-	path = get_cmd(cmd, env);
-	if (!path)
+	cmd = get_cmd(args[0], env);
+	if (!cmd)
 	{
-		cmd_msg = ft_strjoin("command not found: ", cmd);
+		cmd_msg = ft_strjoin("command not found: ", args[0]);
+		free_splits(args);
 		ft_err(cmd_msg);
 	}
-	if (execve(path, args, env) == -1)
+	if (execve(cmd, args, env) == -1)
 	{
-		cmd_msg = ft_strjoin(path, ": ");
+		cmd_msg = ft_strjoin(cmd, ": ");
 		msg = ft_strjoin(cmd_msg, strerror(errno));
 		free(cmd_msg);
-		free(path);
+		free(cmd);
+		free_splits(args);
 		ft_err(msg);
 	}
 }
 
-pid_t	create_pipe(char *cmd, char *args[], char *env[])
+void	child(int *pipe, char **argv, char **env)
 {
-	pid_t	pid;
-	int		pipe_fd[2];
+	int		file;
+	char	**args;
 
-	if (pipe(pipe_fd) == -1)
-		perror("pipex: pipe");
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("pipex: fork");
-		exit(127);
-	}
-	if (pid)
-	{
-		dup2(pipe_fd[0], STDIN_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
-	else
-	{
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		execute(cmd, args, env);
-	}
-	return (pid);
+	file = open(argv[1], O_RDONLY);
+	if (file == -1)
+		ft_errp(argv[1]);
+	dup2(pipe[1], STDOUT_FILENO);
+	dup2(file, STDIN_FILENO);
+	close(pipe[0]);
+	close(pipe[1]);
+	close(file);
+	args = split_cmd(argv[2]);
+	execute(args, env);
+}
+
+void	parent(int *pipe, char **argv, char **env)
+{
+	int		file;
+	char	**args;
+
+	file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (file == -1)
+		ft_errp(argv[4]);
+	dup2(pipe[0], STDIN_FILENO);
+	dup2(file, STDOUT_FILENO);
+	close(pipe[0]);
+	close(pipe[1]);
+	close(file);
+	args = split_cmd(argv[3]);
+	execute(args, env);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
-	int		infile;
-	int		outfile;
-	char	**args;
+	pid_t	pid;
+	int		pipefd[2];
 
 	if (argc != 5)
 		return (write(STDERR_FILENO, ERRMSG, 51));
-	infile = open(argv[1], O_RDONLY);
-	if (infile == -1)
-		ft_errp(argv[1]);
-	dup2(infile, STDIN_FILENO);
-	args = ft_split(argv[2], ' ');
-	// check args here!
-	create_pipe(args[0], args, env);
-	outfile = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (outfile == -1)
-		ft_errp(argv[4]);
-	dup2(outfile, STDOUT_FILENO);
-	free_splits(args);
-	args = ft_split(argv[3], ' ');
-	// check args here!
-	execute(args[0], args, env);
+	if (pipe(pipefd) == -1)
+		ft_errp("pipex: pipe");
+	pid = fork();
+	if (pid == -1)
+		ft_errp("pipex: fork");
+	if (pid)
+		parent(pipefd, argv, env);
+	else
+		child(pipefd, argv, env);
 	return (0);
 }

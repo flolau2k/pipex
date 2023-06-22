@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/21 14:09:28 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:31:40 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # define ERRMSG "Input Error: expected infile \"cmd1\" \"cmd2\" outfile\n"
 
 char	*get_cmd(char *name, char *env[]);
-// void	child(int *pipe, char **argv, char **env);
-// void	parent(int *pipe, char **argv, char **env);
+void	child(int *pipe, char **argv, char **env);
+void	parent(int *pipe, char **argv, char **env);
 int		main(int argc, char *argv[], char *env[]);
 
 void	free_splits(char **arr);
@@ -33,7 +33,6 @@ char	**get_env(char *env[], char *key);
 void	ft_errp(char *msg);
 void	ft_err(char *msg);
 char	*get_cmd_path(char *name, char *env[]);
-void	execute(char *cmd, char *args[], char *env[]);
 
 char	**split_cmd(const char *s);
 
