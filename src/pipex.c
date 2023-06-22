@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 09:28:21 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 09:29:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	child(int *pipe, char **argv, char **env)
 	close(pipe[0]);
 	close(pipe[1]);
 	close(file);
-	args = split_cmd(argv[2]);
+	args = ft_split(argv[2], ' ');
 	execute(args, env);
 }
 
@@ -76,7 +76,7 @@ void	parent(int *pipe, char **argv, char **env)
 	close(pipe[0]);
 	close(pipe[1]);
 	close(file);
-	args = split_cmd(argv[3]);
+	args = ft_split(argv[3], ' ');
 	execute(args, env);
 }
 
