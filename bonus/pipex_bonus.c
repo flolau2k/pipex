@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 12:48:23 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 15:05:11 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,17 @@ void	execute(char *args, char **env)
 	}
 }
 
-pid_t	create_pipe(void (*func)(int, char **), char *env[])
+void	open_file(char *file)
+{
+	int	infile;
+
+	infile = open(file, O_RDONLY);
+	if (infile == -1)
+		ft_errp(file);
+	dup2(infile, STDIN_FILENO);
+}
+
+pid_t	create_pipe(int i, char **args, char **env)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -58,6 +68,7 @@ pid_t	create_pipe(void (*func)(int, char **), char *env[])
 	pid = fork();
 	if (pid == -1)
 		ft_errp("pipex: fork");
+
 	if (pid)
 	{
 		dup2(pipe_fd[0], STDIN_FILENO);
@@ -66,24 +77,14 @@ pid_t	create_pipe(void (*func)(int, char **), char *env[])
 	}
 	else
 	{
+		if (i == 2)
+			open_file(args[1]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		func(args);
-		// execute(args, env);
+		execute(args[i], env);
 	}
 	return (pid);
-}
-
-void	open_file(char *file)
-{
-	int	infile;
-
-	infile = open(file, O_RDONLY);
-	if (infile == -1)
-		perror(file);
-	else
-		dup2(infile, STDIN_FILENO);
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -96,11 +97,9 @@ int	main(int argc, char *argv[], char *env[])
 		return (write(STDERR_FILENO, ERRMSG, 62), 127);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		here_doc(argc, argv);
-	else
-		open_file(argv[1]);
 	while (i < argc - 2)
 	{
-		create_pipe(argv[i], env);
+		create_pipe(i, argv, env);
 		++i;
 	}
 	outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);

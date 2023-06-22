@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 10:13:34 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 14:54:28 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 char	*get_cmd(char *name, char *env[]);
 void	execute(char *args, char **env);
-pid_t	create_pipe(char *args, char *env[]);
+pid_t	create_pipe(int i,char **args, char **env);
 int		main(int argc, char *argv[], char *env[]);
 
 void	free_splits(char **arr);
