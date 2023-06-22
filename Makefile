@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/22 09:31:02 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/22 09:52:03 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,9 +52,9 @@ fclean: clean
 
 re:	fclean all
 
-# bonus: $(LIBFT) $(OBJ_BONUS)
-# 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_BONUS) -Llibft -lft
-# 	@echo "built $(NAME)"
+bonus: $(LIBFT) $(OBJ_BONUS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_BONUS) -Llibft -lft
+	@echo "built $(NAME)"
 
 $(OBJDIR_B)/%.o: $(BONUSDIR)/%.c | $(OBJDIR_B)
 	$(CC) $(CFLAGS) -c -o $@ $<

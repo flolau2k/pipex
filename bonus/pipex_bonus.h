@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 16:21:54 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 10:13:34 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define ERRMSG_HD "Usage: ./pipex here_doc LIMITER cmd cmd1 file"
 
 char	*get_cmd(char *name, char *env[]);
+void	execute(char *args, char **env);
+pid_t	create_pipe(char *args, char *env[]);
 int		main(int argc, char *argv[], char *env[]);
 
 void	free_splits(char **arr);
@@ -33,7 +35,8 @@ void	ft_errp(char *msg);
 void	ft_err(char *msg);
 char	*get_cmd_path(char *name, char *env[]);
 
-void	here_doc(char *argv[]);
-void	child(int *pipe, char *argv[]);
+void	child(int *pipe, char *lim);
+void	here_doc_pipe(char *lim);
+void	here_doc(int argc, char *argv[]);
 
 #endif

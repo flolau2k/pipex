@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 16:22:06 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 10:58:52 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,66 +48,64 @@ void	execute(char *args, char **env)
 	}
 }
 
-void	create_pipe(int i, char *argv[], char *env[])
+pid_t	create_pipe(char *args, char *env[])
 {
 	pid_t	pid;
 	int		pipe_fd[2];
 
 	if (pipe(pipe_fd) == -1)
-		perror("pipex: pipe");
+		ft_errp("pipex: pipe");
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("pipex: fork");
-		exit(127);
-	}
+		ft_errp("pipex: fork");
 	if (pid)
 	{
-		close(pipe_fd[1]);
 		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 	}
 	else
 	{
-		close(pipe_fd[0]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
-		execute(argv[i], env);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		execute(args, env);
 	}
+	return (pid);
+}
+
+void	open_file(char *file)
+{
+	int	infile;
+
+	infile = open(file, O_RDONLY);
+	if (infile == -1)
+		perror(file);
+	else
+		dup2(infile, STDIN_FILENO);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
-	int		i;
-	int		infile;
-	int		outfile;
+	int	i;
+	int	outfile;
 
 	i = 2;
 	if (argc < 5)
 		return (write(STDERR_FILENO, ERRMSG, 62), 127);
-	if (ft_strnstr(argv[1], "here_doc", 8) == argv[1])
-	{
-		if (argc < 6)
-			return (write(STDERR_FILENO, ERRMSG_HD, 45), 127);
-		outfile = open(argv[argc - 1], O_WRONLY | O_APPEND | O_CREAT, 0644);
-		if (outfile == -1)
-			ft_errp(argv[argc - 1]);
-		here_doc(argv);
-	}
+	if (ft_strncmp("here_doc", argv[1], 8) == 0)
+		here_doc(argc, argv);
 	else
-	{
-		infile = open(argv[1], O_RDONLY);
-		if (infile == -1)
-			ft_errp(argv[1]);
-		dup2(infile, STDIN_FILENO);
-		outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		if (outfile == -1)
-			ft_errp(argv[argc - 1]);
-		dup2(outfile, STDOUT_FILENO);
-	}
+		open_file(argv[1]);
 	while (i < argc - 2)
 	{
-		create_pipe(i, argv, env);
+		create_pipe(argv[i], env);
 		++i;
 	}
+	outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (outfile == -1)
+		ft_errp(argv[argc - 1]);
+	dup2(outfile, STDOUT_FILENO);
 	execute(argv[argc - 2], env);
 	return (0);
 }
