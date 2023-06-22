@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 10:58:52 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/22 12:48:23 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	execute(char *args, char **env)
 	}
 }
 
-pid_t	create_pipe(char *args, char *env[])
+pid_t	create_pipe(void (*func)(int, char **), char *env[])
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -69,7 +69,8 @@ pid_t	create_pipe(char *args, char *env[])
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		execute(args, env);
+		func(args);
+		// execute(args, env);
 	}
 	return (pid);
 }
