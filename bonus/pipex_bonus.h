@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 15:11:03 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 17:59:31 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,6 @@ void	open_outfile(char *file, bool here_doc);
 // errors.c
 void	print_usage(void);
 void	ft_errp(char *msg);
-void	ft_err(char *msg);
+void	ft_err(char *msg, int retval);
 
 #endif
