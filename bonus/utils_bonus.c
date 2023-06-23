@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/18 15:51:09 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 14:46:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,33 +49,6 @@ char	**get_env(char *env[], char *key)
 	return (NULL);
 }
 
-void	ft_errp(char *msg)
-{
-	char	*message;
-
-	if (msg)
-	{
-		message = ft_strjoin("pipex: ", msg);
-		perror(message);
-		free(message);
-	}
-	else
-		perror("pipex: ");
-	exit(127);
-}
-
-void	ft_err(char *msg)
-{
-	char	*message;
-
-	message = ft_strjoin("pipex: ", msg);
-	write(STDERR_FILENO, message, ft_strlen(message));
-	write(STDERR_FILENO, "\n", 1);
-	free(message);
-	free(msg);
-	exit(127);
-}
-
 char	*get_cmd_path(char *name, char *env[])
 {
 	char	**paths;
@@ -99,4 +72,14 @@ char	*get_cmd_path(char *name, char *env[])
 	}
 	free_splits(paths);
 	return (cmd);
+}
+
+char	*get_cmd(char *name, char *env[])
+{
+	if (!name)
+		return (NULL);
+	if (name[0] == '/' || ft_strnstr(name, "./", 2) == name)
+		return (ft_strdup(name));
+	else
+		return (get_cmd_path(name, env));
 }

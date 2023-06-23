@@ -6,21 +6,11 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 15:05:11 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 14:50:54 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-char	*get_cmd(char *name, char *env[])
-{
-	if (!name)
-		return (NULL);
-	if (name[0] == '/' || ft_strnstr(name, "./", 2) == name)
-		return (ft_strdup(name));
-	else
-		return (get_cmd_path(name, env));
-}
 
 void	execute(char *args, char **env)
 {
@@ -48,64 +38,31 @@ void	execute(char *args, char **env)
 	}
 }
 
-void	open_file(char *file)
+void	pipex(t_args *args)
 {
-	int	infile;
-
-	infile = open(file, O_RDONLY);
-	if (infile == -1)
-		ft_errp(file);
-	dup2(infile, STDIN_FILENO);
-}
-
-pid_t	create_pipe(int i, char **args, char **env)
-{
-	pid_t	pid;
-	int		pipe_fd[2];
-
-	if (pipe(pipe_fd) == -1)
-		ft_errp("pipex: pipe");
-	pid = fork();
-	if (pid == -1)
-		ft_errp("pipex: fork");
-
-	if (pid)
-	{
-		dup2(pipe_fd[0], STDIN_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
-	else
-	{
-		if (i == 2)
-			open_file(args[1]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		execute(args[i], env);
-	}
-	return (pid);
+	open_outfile(args->argv[args->argc - 1], false);
+	create_pipe(&first_child, (void *)args, &generic_parent, NULL);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
-	int	i;
-	int	outfile;
+	t_args	args;
 
-	i = 2;
 	if (argc < 5)
-		return (write(STDERR_FILENO, ERRMSG, 62), 127);
+		print_usage();
+	args.i = 3;
+	args.argc = argc;
+	args.argv = argv;
+	args.env = env;
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
-		here_doc(argc, argv);
-	while (i < argc - 2)
+		here_doc(&args);
+	else
+		pipex(&args);
+	while (args.i < argc - 2)
 	{
-		create_pipe(i, argv, env);
-		++i;
+		create_pipe(&generic_child, (void *)&args, &generic_parent, NULL);
+		++(args.i);
 	}
-	outfile = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (outfile == -1)
-		ft_errp(argv[argc - 1]);
-	dup2(outfile, STDOUT_FILENO);
 	execute(argv[argc - 2], env);
 	return (0);
 }

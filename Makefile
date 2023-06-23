@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/22 15:21:16 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/23 14:47:37 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ OBJDIR_B =	obj_bonus
 TEST_DIR = 	test
 
 FILES =		pipex.c utils.c
-F_BONUS =	pipex_bonus.c utils_bonus.c here_doc_bonus.c
+F_BONUS =	pipex_bonus.c utils_bonus.c here_doc_bonus.c errors.c file_utils.c \
+			pipe_functions.c
 TEST_F = 	pipex_tester.c
 
 SRC =		$(addprefix $(SRCDIR)/, $(FILES))
