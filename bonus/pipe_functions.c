@@ -6,16 +6,16 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 13:52:47 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 14:57:24 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 15:54:09 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
 pid_t	create_pipe(
-			void (*f1)(int *, void *),
+			void (f1)(int *, void *),
 			void *a1,
-			void (*f2)(int *, void *),
+			void (f2)(int *, void *),
 			void *a2)
 {
 	pid_t	pid;
@@ -26,7 +26,7 @@ pid_t	create_pipe(
 	pid = fork();
 	if (pid == -1)
 		ft_errp("pipex: fork");
-	if (pid)
+	if (pid == 0)
 		f1(pipe_fd, a1);
 	else
 		f2(pipe_fd, a2);
@@ -39,7 +39,7 @@ void	first_child(int *pipe_fd, void *arg)
 
 	args = (t_args *)arg;
 	open_infile(args->argv[1]);
-	generic_child(pipe_fd, args);
+	generic_child(pipe_fd, arg);
 }
 
 void	generic_child(int *pipe_fd, void *arg)

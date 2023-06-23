@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 13:57:22 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 13:57:29 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 15:24:26 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	open_infile(char *file)
 	if (infile == -1)
 		ft_errp(file);
 	dup2(infile, STDIN_FILENO);
+	close(infile);
 }
 
 void	open_outfile(char *file, bool here_doc)

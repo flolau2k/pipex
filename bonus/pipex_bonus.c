@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 14:50:54 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 15:54:23 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main(int argc, char *argv[], char *env[])
 
 	if (argc < 5)
 		print_usage();
-	args.i = 3;
+	args.i = 2;
 	args.argc = argc;
 	args.argv = argv;
 	args.env = env;
@@ -58,10 +58,11 @@ int	main(int argc, char *argv[], char *env[])
 		here_doc(&args);
 	else
 		pipex(&args);
+	args.i++;
 	while (args.i < argc - 2)
 	{
 		create_pipe(&generic_child, (void *)&args, &generic_parent, NULL);
-		++(args.i);
+		args.i++;
 	}
 	execute(argv[argc - 2], env);
 	return (0);

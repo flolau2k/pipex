@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/23 14:47:37 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/23 15:17:37 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ $(OBJDIR):
 clean:
 	make -C libft clean
 	/bin/rm -rf $(OBJDIR)
+	/bin/rm -rf $(OBJDIR_B)
 
 fclean: clean
 	make -C libft fclean
@@ -59,7 +60,7 @@ re:	fclean all
 
 bonus: $(LIBFT) $(OBJ_BONUS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_BONUS) -Llibft -lft
-	@echo "built $(NAME)"
+	@echo "built $(NAME) bonus"
 
 $(OBJDIR_B)/%.o: $(BONUSDIR)/%.c | $(OBJDIR_B)
 	$(CC) $(CFLAGS) -c -o $@ $<
