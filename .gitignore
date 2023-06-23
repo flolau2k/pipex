@@ -5,3 +5,4 @@ obj/
 obj_bonus/
 vgcore*
 *.dSYM
+.vscode/
