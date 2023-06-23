@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/22 09:29:39 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 17:53:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,17 @@
 
 char	*get_cmd(char *name, char *env[])
 {
+	char	*ret;
+
 	if (!name)
 		return (NULL);
 	if (name[0] == '/' || ft_strnstr(name, "./", 2) == name)
 		return (ft_strdup(name));
 	else
-		return (get_cmd_path(name, env));
+		ret = get_cmd_path(name, env);
+		if (!ret && ft_strnstr(name, "/", ft_strlen(name)))
+			return (ft_strdup(name));
+		return (ret);
 }
 
 void	execute(char **args, char **env)
