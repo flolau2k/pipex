@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 17:53:06 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 18:02:53 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	execute(char **args, char **env)
 	{
 		cmd_msg = ft_strjoin("command not found: ", args[0]);
 		free_splits(args);
-		ft_err(cmd_msg);
+		ft_err(cmd_msg, 127);
 	}
 	if (execve(cmd, args, env) == -1)
 	{
@@ -47,7 +47,7 @@ void	execute(char **args, char **env)
 		free(cmd_msg);
 		free(cmd);
 		free_splits(args);
-		ft_err(msg);
+		ft_err(msg, 126);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 16:31:40 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 18:02:27 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		main(int argc, char *argv[], char *env[]);
 void	free_splits(char **arr);
 char	**get_env(char *env[], char *key);
 void	ft_errp(char *msg);
-void	ft_err(char *msg);
+void	ft_err(char *msg, int retval);
 char	*get_cmd_path(char *name, char *env[]);
 
 char	**split_cmd(const char *s);

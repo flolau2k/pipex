@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/19 15:02:21 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/23 18:02:21 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ void	ft_errp(char *msg)
 	}
 	else
 		perror("pipex");
-	exit(127);
+	exit(1);
 }
 
-void	ft_err(char *msg)
+void	ft_err(char *msg, int retval)
 {
 	char	*message;
 
@@ -73,7 +73,7 @@ void	ft_err(char *msg)
 	write(STDERR_FILENO, "\n", 1);
 	free(message);
 	free(msg);
-	exit(127);
+	exit(retval);
 }
 
 char	*get_cmd_path(char *name, char *env[])
