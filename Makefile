@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
+#    By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/23 18:15:27 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/24 10:38:00 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,8 @@ BONUSDIR =	bonus
 OBJDIR_B =	obj_bonus
 
 FILES =		pipex.c utils.c
-F_BONUS =	pipex_bonus.c utils_bonus.c here_doc_bonus.c errors.c file_utils.c \
-			pipe_functions.c
+F_BONUS =	pipex_bonus.c utils_bonus.c here_doc_bonus.c errors_bonus.c \
+			file_utils_bonus.c pipe_functions_bonus.c
 
 SRC =		$(addprefix $(SRCDIR)/, $(FILES))
 OBJ =		$(addprefix $(OBJDIR)/, $(FILES:%.c=%.o))
