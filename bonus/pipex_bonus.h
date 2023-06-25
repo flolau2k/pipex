@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 17:59:31 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:19:25 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,13 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include "../libft/include/libft.h"
-# define ERRMSG "Usage: ./pipex infile \"cmd1\" \"cmd2\" ... \"cmdx\" outfile\n"
-# define ERRMSG_HD "Usage: ./pipex here_doc LIMITER cmd cmd1 file"
+# define ERRMSG "Usage: pipex infile \"cmd1\" \"cmd2\" ... \"cmdx\" outfile\n"
+# define ERRMSG_HD "Usage: pipex here_doc LIMITER cmd cmd1 file"
+
+// see https://tldp.org/LDP/abs/html/exitcodes.html
+# define CMD_ERROR 126
+# define CMD_NOT_FOUND 127
+# define GENERAL_ERROR 1
 
 typedef struct s_args
 {

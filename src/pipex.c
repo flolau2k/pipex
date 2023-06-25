@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 18:04:50 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:21:15 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	execute(char **args, char **env)
 	{
 		cmd_msg = ft_strjoin("command not found: ", args[0]);
 		free_splits(args);
-		ft_err(cmd_msg, 127);
+		ft_err(cmd_msg, CMD_NOT_FOUND);
 	}
 	if (execve(cmd, args, env) == -1)
 	{
@@ -46,7 +46,7 @@ void	execute(char **args, char **env)
 		free(cmd_msg);
 		free(cmd);
 		free_splits(args);
-		ft_err(msg, 126);
+		ft_err(msg, CMD_ERROR);
 	}
 }
 

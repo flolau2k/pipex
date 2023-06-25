@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   errors_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 14:03:34 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/23 17:59:17 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:16:42 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	print_usage(void)
 	ft_printf("%s\n", "usage: pipex infile cmd1 cmd2 ... cmdn outfile");
 	ft_printf("%s\n", "alternatively with here_doc:");
 	ft_printf("%s\n", "pipex here_doc LIMITER cmd1 cmd2 outfile");
-	exit(127);
+	exit(GENERAL_ERROR);
 }
 
 void	ft_errp(char *msg)
@@ -33,7 +33,7 @@ void	ft_errp(char *msg)
 	}
 	else
 		perror("pipex: ");
-	exit(1);
+	exit(GENERAL_ERROR);
 }
 
 void	ft_err(char *msg, int retval)
