@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:20:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:26:07 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ char	**get_env(char *env[], char *key)
 		{
 			trim = ft_strtrim(env[i], key);
 			ret = ft_split(trim, ':');
-			return (free(trim), ret);
+			free(trim);
+			return (ret);
 		}
 		++i;
 	}
