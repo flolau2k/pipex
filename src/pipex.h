@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:19:16 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:27:53 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define GENERAL_ERROR 1
 
 char	*get_cmd(char *name, char *env[]);
+void	execute(char **args, char **env);
 void	child(int *pipe, char **argv, char **env);
 void	parent(int *pipe, char **argv, char **env);
 int		main(int argc, char *argv[], char *env[]);
@@ -38,7 +39,5 @@ char	**get_env(char *env[], char *key);
 void	ft_errp(char *msg);
 void	ft_err(char *msg, int retval);
 char	*get_cmd_path(char *name, char *env[]);
-
-char	**split_cmd(const char *s);
 
 #endif
