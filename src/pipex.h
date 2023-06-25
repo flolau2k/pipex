@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:27:53 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 18:08:27 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 # define CMD_ERROR 126
 # define CMD_NOT_FOUND 127
 # define GENERAL_ERROR 1
+
+typedef struct s_pipex
+{
+	pid_t	pid;
+	int		pipe_fd[2];
+	char	**args1;
+	char	**args2;
+}	s_pipex;
 
 char	*get_cmd(char *name, char *env[]);
 void	execute(char **args, char **env);

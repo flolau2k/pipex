@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:55:27 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 18:35:06 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,10 @@ int	main(int argc, char *argv[], char *env[])
 {
 	pid_t	pid;
 	int		pipe_fd[2];
+	char	**splits;
 
 	//TODO: free this properly. Write a checker which checkes and frees on error.
+	splits = 
 	if (argc != 5 || !ft_split(argv[2], ' ')[0] || !ft_split(argv[3], ' ')[0])
 	{
 		write(STDERR_FILENO, ERRMSG, ft_strlen(ERRMSG));
