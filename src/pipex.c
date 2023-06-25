@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:21:15 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:27:09 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,18 +87,21 @@ void	parent(int *pipe, char **argv, char **env)
 int	main(int argc, char *argv[], char *env[])
 {
 	pid_t	pid;
-	int		pipefd[2];
+	int		pipe_fd[2];
 
 	if (argc != 5)
-		return (write(STDERR_FILENO, ERRMSG, 51));
-	if (pipe(pipefd) == -1)
+	{
+		write(STDERR_FILENO, ERRMSG, ft_strlen(ERRMSG));
+		exit(GENERAL_ERROR);
+	}
+	if (pipe(pipe_fd) == -1)
 		ft_errp("pipex: pipe");
 	pid = fork();
 	if (pid == -1)
 		ft_errp("pipex: fork");
 	if (pid)
-		parent(pipefd, argv, env);
+		parent(pipe_fd, argv, env);
 	else
-		child(pipefd, argv, env);
+		child(pipe_fd, argv, env);
 	return (0);
 }
