@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:14:46 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/25 17:56:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,32 @@ void	pipex(t_args *args)
 	create_pipe(&first_child, (void *)args, &generic_parent, NULL);
 }
 
+void	check_args(int argc, char **argv)
+{
+	int		i;
+	char	**splits;
+
+	i = 2;
+	if (argc < 5)
+		print_usage();
+	while (i < argc - 1)
+	{
+		splits = ft_split(argv[i], ' ');
+		if (!splits[0])
+		{
+			free_splits(splits);
+			print_usage();
+		}
+		free_splits(splits);
+		++i;
+	}
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	t_args	args;
 
-	if (argc < 5)
-		print_usage();
+	check_args(argc, argv);
 	args.i = 2;
 	args.argc = argc;
 	args.argv = argv;
