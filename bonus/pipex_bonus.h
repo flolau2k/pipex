@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/26 14:55:06 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 15:54:20 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ typedef struct s_args
 
 // pipex_bonus.c
 void	execute(char *args, char **env);
+void	pipex(t_args *args);
+void	check_args(int argc, char **argv, t_args *args);
 int		main(int argc, char *argv[], char *env[]);
-void	open_outfile(char *file, bool here_doc);
 
 // utils_bonus.c
 void	free_splits(char **arr);
@@ -51,10 +52,9 @@ char	*get_cmd(char *name, char *env[]);
 
 // here_doc_bonus.c
 void	hd_child(int *pipe_fd, void *arg);
-void	here_doc_pipe(char *lim);
 void	here_doc(t_args *args);
 
-// pipe_functions.c
+// pipe_functions_bonus.c
 pid_t	create_pipe(
 			void (f1)(int *, void *),
 			void *a1,
@@ -68,7 +68,7 @@ void	generic_parent(int *pipe_fd, void *arg);
 void	open_infile(char *file);
 void	open_outfile(char *file, bool here_doc);
 
-// errors.c
+// errors_bonus.c
 void	print_usage(void);
 void	ft_errp(char *msg);
 void	ft_err(char *msg, int retval);
