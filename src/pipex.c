@@ -3,35 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 18:35:06 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:13:12 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_cmd(char *name, char *env[])
-{
-	char	*ret;
-
-	if (!name)
-		return (NULL);
-	if (name[0] == '/' || ft_strnstr(name, "./", 2) == name)
-		return (ft_strdup(name));
-	ret = get_cmd_path(name, env);
-	if (!ret && ft_strnstr(name, "/", ft_strlen(name)))
-		return (ft_strdup(name));
-	return (ret);
-}
-
-void	execute(char **args, char **env)
+void	execute(char *arg, char **env)
 {
 	char	*msg;
 	char	*cmd_msg;
 	char	*cmd;
+	char	**args;
 
+	args = ft_split(arg, ' ');
 	cmd = get_cmd(args[0], env);
 	if (!cmd)
 	{
@@ -53,7 +41,6 @@ void	execute(char **args, char **env)
 void	child(int *pipe, char **argv, char **env)
 {
 	int		file;
-	char	**args;
 
 	file = open(argv[1], O_RDONLY);
 	if (file == -1)
@@ -63,14 +50,12 @@ void	child(int *pipe, char **argv, char **env)
 	close(pipe[0]);
 	close(pipe[1]);
 	close(file);
-	args = ft_split(argv[2], ' ');
-	execute(args, env);
+	execute(argv[2], env);
 }
 
 void	parent(int *pipe, char **argv, char **env)
 {
 	int		file;
-	char	**args;
 
 	file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (file == -1)
@@ -80,23 +65,34 @@ void	parent(int *pipe, char **argv, char **env)
 	close(pipe[0]);
 	close(pipe[1]);
 	close(file);
-	args = ft_split(argv[3], ' ');
-	execute(args, env);
+	execute(argv[3], env);
+}
+
+void	check_args(int argc, char **argv)
+{
+	char	**args1;
+	char	**args2;
+
+	if (argc != 5)
+		print_usage();
+	args1 = ft_split(argv[2], ' ');
+	args2 = ft_split(argv[3], ' ');
+	if (!args1[0] || !args2[0])
+	{
+		free_splits(args1);
+		free_splits(args2);
+		print_usage();
+	}
+	free_splits(args1);
+	free_splits(args2);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
 	pid_t	pid;
 	int		pipe_fd[2];
-	char	**splits;
 
-	//TODO: free this properly. Write a checker which checkes and frees on error.
-	splits = 
-	if (argc != 5 || !ft_split(argv[2], ' ')[0] || !ft_split(argv[3], ' ')[0])
-	{
-		write(STDERR_FILENO, ERRMSG, ft_strlen(ERRMSG));
-		exit(GENERAL_ERROR);
-	}
+	check_args(argc, argv);
 	if (pipe(pipe_fd) == -1)
 		ft_errp("pipex: pipe");
 	pid = fork();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 18:08:27 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:14:47 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,24 +28,19 @@
 # define CMD_NOT_FOUND 127
 # define GENERAL_ERROR 1
 
-typedef struct s_pipex
-{
-	pid_t	pid;
-	int		pipe_fd[2];
-	char	**args1;
-	char	**args2;
-}	s_pipex;
-
-char	*get_cmd(char *name, char *env[]);
-void	execute(char **args, char **env);
+void	execute(char *args, char **env);
 void	child(int *pipe, char **argv, char **env);
 void	parent(int *pipe, char **argv, char **env);
+void	check_args(int argc, char **argv);
 int		main(int argc, char *argv[], char *env[]);
 
 void	free_splits(char **arr);
 char	**get_env(char *env[], char *key);
+char	*get_cmd(char *name, char *env[]);
+char	*get_cmd_path(char *name, char *env[]);
+
+void	print_usage(void);
 void	ft_errp(char *msg);
 void	ft_err(char *msg, int retval);
-char	*get_cmd_path(char *name, char *env[]);
 
 #endif

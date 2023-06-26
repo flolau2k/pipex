@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:26:07 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:12:57 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,31 +50,14 @@ char	**get_env(char *env[], char *key)
 	return (NULL);
 }
 
-void	ft_errp(char *msg)
+char	*get_cmd(char *name, char *env[])
 {
-	char	*message;
-
-	if (msg)
-	{
-		message = ft_strjoin("pipex: ", msg);
-		perror(message);
-		free(message);
-	}
+	if (!name)
+		return (NULL);
+	else if (ft_strnstr(name, "/", ft_strlen(name)))
+		return (ft_strdup(name));
 	else
-		perror("pipex");
-	exit(GENERAL_ERROR);
-}
-
-void	ft_err(char *msg, int retval)
-{
-	char	*message;
-
-	message = ft_strjoin("pipex: ", msg);
-	write(STDERR_FILENO, message, ft_strlen(message));
-	write(STDERR_FILENO, "\n", 1);
-	free(message);
-	free(msg);
-	exit(retval);
+		return (get_cmd_path(name, env));
 }
 
 char	*get_cmd_path(char *name, char *env[])
