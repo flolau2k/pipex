@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 14:03:34 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:16:42 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 15:56:39 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 void	print_usage(void)
 {
 	ft_printf("%s\n", "pipex: input error");
-	ft_printf("%s\n", "usage: pipex infile cmd1 cmd2 ... cmdn outfile");
-	ft_printf("%s\n", "alternatively with here_doc:");
-	ft_printf("%s\n", "pipex here_doc LIMITER cmd1 cmd2 outfile");
+	ft_printf("%s\n", "usage: pipex [infile|here_doc LIMITER] \
+infile cmd1 cmd2 ... cmdn outfile");
 	exit(GENERAL_ERROR);
 }
 
