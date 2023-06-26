@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: flauer <flauer@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/25 17:56:39 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/26 15:02:32 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	pipex(t_args *args)
 	create_pipe(&first_child, (void *)args, &generic_parent, NULL);
 }
 
-void	check_args(int argc, char **argv)
+void	check_args(int argc, char **argv, t_args *args)
 {
 	int		i;
 	char	**splits;
@@ -52,6 +52,11 @@ void	check_args(int argc, char **argv)
 	i = 2;
 	if (argc < 5)
 		print_usage();
+	if (ft_strncmp("here_doc", argv[1], 8) == 0)
+	{
+		args->here_doc = true;
+		++i;
+	}
 	while (i < argc - 1)
 	{
 		splits = ft_split(argv[i], ' ');
@@ -69,12 +74,13 @@ int	main(int argc, char *argv[], char *env[])
 {
 	t_args	args;
 
-	check_args(argc, argv);
+	args.here_doc = false;
+	check_args(argc, argv, &args);
 	args.i = 2;
 	args.argc = argc;
 	args.argv = argv;
 	args.env = env;
-	if (ft_strncmp("here_doc", argv[1], 8) == 0)
+	if (args.here_doc)
 		here_doc(&args);
 	else
 		pipex(&args);
