@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/26 14:13:12 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 10:07:30 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,21 +70,23 @@ void	parent(int *pipe, char **argv, char **env)
 
 void	check_args(int argc, char **argv)
 {
-	char	**args1;
-	char	**args2;
+	char	**args;
+	int		i;
 
+	i = 2;
 	if (argc != 5)
 		print_usage();
-	args1 = ft_split(argv[2], ' ');
-	args2 = ft_split(argv[3], ' ');
-	if (!args1[0] || !args2[0])
+	while (i < 4)
 	{
-		free_splits(args1);
-		free_splits(args2);
-		print_usage();
+		args = ft_split(argv[i], ' ');
+		if (!args || !args[0])
+		{
+			free_splits(args);
+			print_usage();
+		}
+		free_splits(args);
+		++i;
 	}
-	free_splits(args1);
-	free_splits(args2);
 }
 
 int	main(int argc, char *argv[], char *env[])
