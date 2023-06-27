@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/26 14:14:47 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:22:45 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 # define GENERAL_ERROR 1
 
 void	execute(char *args, char **env);
-void	child(int *pipe, char **argv, char **env);
-void	parent(int *pipe, char **argv, char **env);
+void	child(int *pipe_fd, char **argv, char **env);
+void	parent(int *stat_loc, char **argv, char **env);
 void	check_args(int argc, char **argv);
 int		main(int argc, char *argv[], char *env[]);
 
@@ -38,6 +38,7 @@ void	free_splits(char **arr);
 char	**get_env(char *env[], char *key);
 char	*get_cmd(char *name, char *env[]);
 char	*get_cmd_path(char *name, char *env[]);
+void	wait_exit(void);
 
 void	print_usage(void);
 void	ft_errp(char *msg);

@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 12:28:00 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/27 10:05:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:22:42 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,13 @@ char	*get_cmd_path(char *name, char *env[])
 	}
 	free_splits(paths);
 	return (cmd);
+}
+
+void	wait_exit(void)
+{
+	pid_t	pid;
+
+	pid = waitpid(0, NULL, 0);
+	while (pid != -1)
+		pid = waitpid(0, NULL, 0);
 }

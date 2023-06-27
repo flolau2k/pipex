@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/27 10:07:30 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:22:29 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,34 +38,56 @@ void	execute(char *arg, char **env)
 	}
 }
 
-void	child(int *pipe, char **argv, char **env)
+void	child(int *pipe_fd, char **argv, char **env)
 {
 	int		file;
+	pid_t	pid;
 
-	file = open(argv[1], O_RDONLY);
-	if (file == -1)
-		ft_errp(argv[1]);
-	dup2(pipe[1], STDOUT_FILENO);
-	dup2(file, STDIN_FILENO);
-	close(pipe[0]);
-	close(pipe[1]);
-	close(file);
-	execute(argv[2], env);
+	pid = fork();
+	if (pid == -1)
+		ft_errp("pipex: fork");
+	if (pid == 0)
+	{
+		file = open(argv[1], O_RDONLY);
+		if (file == -1)
+			ft_errp(argv[1]);
+		dup2(file, STDIN_FILENO);
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		close(file);
+		execute(argv[2], env);
+	}
+	else
+	{
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+	}
 }
 
-void	parent(int *pipe, char **argv, char **env)
+void	parent(int *stat_loc, char **argv, char **env)
 {
 	int		file;
+	pid_t	pid;
 
-	file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (file == -1)
-		ft_errp(argv[4]);
-	dup2(pipe[0], STDIN_FILENO);
-	dup2(file, STDOUT_FILENO);
-	close(pipe[0]);
-	close(pipe[1]);
-	close(file);
-	execute(argv[3], env);
+	pid = fork();
+	if (pid == -1)
+		ft_errp("pipex: fork");
+	if (pid == 0)
+	{
+		file = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (file == -1)
+			ft_errp(argv[4]);
+		dup2(file, STDOUT_FILENO);
+		close(file);
+		execute(argv[3], env);
+	}
+	else
+	{
+		close(STDIN_FILENO);
+		waitpid(pid, stat_loc, 0);
+	}
 }
 
 void	check_args(int argc, char **argv)
@@ -91,18 +113,14 @@ void	check_args(int argc, char **argv)
 
 int	main(int argc, char *argv[], char *env[])
 {
-	pid_t	pid;
 	int		pipe_fd[2];
+	int		stat_loc;
 
 	check_args(argc, argv);
 	if (pipe(pipe_fd) == -1)
 		ft_errp("pipex: pipe");
-	pid = fork();
-	if (pid == -1)
-		ft_errp("pipex: fork");
-	if (pid)
-		parent(pipe_fd, argv, env);
-	else
-		child(pipe_fd, argv, env);
-	return (0);
+	child(pipe_fd, argv, env);
+	parent(&stat_loc, argv, env);
+	wait_exit();
+	exit(WEXITSTATUS(stat_loc));
 }
