@@ -6,7 +6,7 @@
 #    By: flauer <flauer@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/12 11:17:07 by flauer            #+#    #+#              #
-#    Updated: 2023/06/26 14:13:29 by flauer           ###   ########.fr        #
+#    Updated: 2023/06/27 09:56:21 by flauer           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,7 +65,7 @@ $(OBJDIR_B):
 	@mkdir -p $(OBJDIR_B)
 
 $(LIBFT):
-	@git submodule update --init --recursive --remote
+	@git submodule update --init --recursive
 	@make -C $(@D)
 
 .PHONY =	all clean fclean re bonus
