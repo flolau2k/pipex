@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/27 16:16:40 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:37:10 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_args
 // pipex_bonus.c
 void	execute(char *args, char **env);
 void	check_args(int argc, char **argv, t_args *args);
-void	pipex(t_args *args, int *stat_loc);
+void	last_cmd(int *stat_loc, t_args *args);
 int		main(int argc, char *argv[], char *env[]);
 
 // utils_bonus.c
@@ -59,7 +59,7 @@ pid_t	create_pipe(void (f1)(void *), void *a1);
 void	first_child(void *arg);
 void	generic_child(void *arg);
 
-// file_utils.c
+// file_utils_bonus.c
 void	open_infile(char *file);
 void	open_outfile(char *file, bool here_doc);
 
