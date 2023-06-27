@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:26:21 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/26 15:54:20 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:16:40 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct s_args
 
 // pipex_bonus.c
 void	execute(char *args, char **env);
-void	pipex(t_args *args);
 void	check_args(int argc, char **argv, t_args *args);
+void	pipex(t_args *args, int *stat_loc);
 int		main(int argc, char *argv[], char *env[]);
 
 // utils_bonus.c
@@ -51,18 +51,13 @@ char	*get_cmd_path(char *name, char *env[]);
 char	*get_cmd(char *name, char *env[]);
 
 // here_doc_bonus.c
-void	hd_child(int *pipe_fd, void *arg);
+void	hd_child(void *arg);
 void	here_doc(t_args *args);
 
 // pipe_functions_bonus.c
-pid_t	create_pipe(
-			void (f1)(int *, void *),
-			void *a1,
-			void (f2)(int *, void *),
-			void *a2);
-void	first_child(int *pipe_fd, void *arg);
-void	generic_child(int *pipe_fd, void *arg);
-void	generic_parent(int *pipe_fd, void *arg);
+pid_t	create_pipe(void (f1)(void *), void *a1);
+void	first_child(void *arg);
+void	generic_child(void *arg);
 
 // file_utils.c
 void	open_infile(char *file);

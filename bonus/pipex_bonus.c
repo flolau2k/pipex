@@ -6,7 +6,7 @@
 /*   By: flauer <flauer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 11:31:28 by flauer            #+#    #+#             */
-/*   Updated: 2023/06/26 15:02:32 by flauer           ###   ########.fr       */
+/*   Updated: 2023/06/27 16:17:35 by flauer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,6 @@ void	execute(char *args, char **env)
 	}
 }
 
-void	pipex(t_args *args)
-{
-	open_outfile(args->argv[args->argc - 1], false);
-	create_pipe(&first_child, (void *)args, &generic_parent, NULL);
-}
-
 void	check_args(int argc, char **argv, t_args *args)
 {
 	int		i;
@@ -70,8 +64,29 @@ void	check_args(int argc, char **argv, t_args *args)
 	}
 }
 
+void	last_cmd(int *stat_loc, t_args *args)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+		ft_errp("pipex: fork");
+	if (pid == 0)
+	{
+		open_outfile(args->argv[args->argc - 1], args->here_doc);
+		execute(args->argv[args->argc - 2], args->env);
+	}
+	else
+	{
+		close(STDIN_FILENO);
+		waitpid(pid, stat_loc, 0);
+	}
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
+	int		stat_loc;
+	pid_t	pid;
 	t_args	args;
 
 	args.here_doc = false;
@@ -83,13 +98,16 @@ int	main(int argc, char *argv[], char *env[])
 	if (args.here_doc)
 		here_doc(&args);
 	else
-		pipex(&args);
+		create_pipe(&first_child, (void *)&args);
 	args.i++;
 	while (args.i < argc - 2)
 	{
-		create_pipe(&generic_child, (void *)&args, &generic_parent, NULL);
+		create_pipe(&generic_child, (void *)&args);
 		args.i++;
 	}
-	execute(argv[argc - 2], env);
-	return (0);
+	last_cmd(&stat_loc, &args);
+	pid = wait(NULL);
+	while (pid != -1)
+		pid = wait(NULL);
+	return (WEXITSTATUS(stat_loc));
 }
